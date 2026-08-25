@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #E2E8E0;
+    background-image: 
+      linear-gradient(to right, rgba(30, 44, 29, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(30, 44, 29, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+.tactile-grid-bg {
+  background-color: #E2E8E0;
+  background-image: 
+    linear-gradient(to right, rgba(30, 44, 29, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 44, 29, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.tactile-box {
+  border: 2px solid #1E2C1D;
+  box-shadow: 4px 4px 0px #1E2C1D;
+}
+
+.tactile-box-sm {
+  border: 2px solid #1E2C1D;
+  box-shadow: 2px 2px 0px #1E2C1D;
+}
+
+.tactile-button {
+  border: 2px solid #1E2C1D;
+  box-shadow: 3px 3px 0px #1E2C1D;
+  transition: all 0.1s ease-in-out;
+}
+
+.tactile-button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #1E2C1D;
+}
+
+.tactile-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #1E2C1D;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E2E8E0;
+  border-left: 2px solid #1E2C1D;
+}
+::-webkit-scrollbar-thumb {
+  background: #5C7C58;
+  border: 1px solid #1E2C1D;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #456942;
+}

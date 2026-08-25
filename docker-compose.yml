@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: disaster_response_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DATABASE_URL=sqlite:///./disaster_response.db
+    volumes:
+      - ./backend/data:/app/data
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: disaster_response_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: disaster_response_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE_URL=http://backend:8000/api
+    depends_on:
+      - backend
+    restart: always
