@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, ExternalLink, GitBranch } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert }) {
   const tabs = [
@@ -29,22 +29,12 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
         <div className="flex items-center gap-3">
           <button 
             onClick={onResetDemo}
-            className="flex items-center gap-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white font-mono font-bold rounded border border-black shadow-sm transition"
-            title="Reset to 3-minute hackathon demo state"
+            className="flex items-center gap-1 px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white font-mono font-bold rounded border border-black shadow-sm transition"
+            title="Reset to hackathon demo state"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             1-CLICK DEMO SEED
           </button>
-          
-          <a
-            href="http://localhost:8501"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 px-2.5 py-1 bg-tactile-accent hover:bg-emerald-500 text-black font-mono font-bold rounded border border-black shadow-sm transition"
-          >
-            OPEN STREAMLIT DASHBOARD
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
         </div>
       </div>
 

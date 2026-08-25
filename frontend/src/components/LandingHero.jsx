@@ -1,8 +1,8 @@
 import React from 'react';
-import { ArrowRight, ArrowDown, Database, Cpu, Brain, Layers, ShieldCheck, Activity, Map, ExternalLink } from 'lucide-react';
+import { ArrowRight, ArrowDown, Database, Cpu, Brain, ShieldCheck } from 'lucide-react';
 import AgenticWorkflow from './AgenticWorkflow';
 
-export default function LandingHero({ onNavigate, activeTab, totalIncidents = 8173 }) {
+export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 }) {
   const navTabs = [
     { id: 'landing', label: 'STI' },
     { id: 'architecture', label: 'ARCHITECTURE' },
@@ -24,7 +24,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
   return (
     <div className="w-full min-h-screen bg-tactile-bg tactile-grid-bg text-tactile-border flex flex-col justify-between selection:bg-tactile-accent selection:text-black">
       
-      {/* Top Navbar Header matching screenshot */}
+      {/* Top Navbar Header */}
       <header className="w-full bg-[#D5DDD3] border-b-2 border-black px-4 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
           {navTabs.map((tab) => (
@@ -41,24 +41,12 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
             </button>
           ))}
         </div>
-
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <a
-            href="http://localhost:8501"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 px-3 py-1 bg-tactile-accent text-black font-extrabold border-2 border-black shadow-tactile-sm hover:bg-emerald-400 transition"
-          >
-            STREAMLIT COMMAND CENTER
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </div>
       </header>
 
       {/* Main Hero Container */}
       <div className="max-w-7xl mx-auto w-full px-4 py-8 sm:py-12 flex-1 flex flex-col justify-center">
         
-        {/* Main Grid: Left Hero Text Card + Right Brain Card */}
+        {/* Main Grid: Left Hero Main Card + Right Brain Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Left Hero Main Card */}
@@ -71,7 +59,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
                 SYSTEM STATUS: OPERATIONAL
               </div>
 
-              {/* Stacked Heading with Green Highlight Box */}
+              {/* Stacked Heading */}
               <div className="font-mono font-black text-3xl sm:text-5xl lg:text-6xl text-tactile-border leading-[1.1] tracking-tight uppercase">
                 <div>DISASTER RESPONSE</div>
                 <div className="inline-block bg-tactile-accent text-black px-3 py-1 mt-1 border-2 border-black shadow-tactile-sm">
@@ -87,7 +75,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
 
               {/* Technical Meta Tag */}
               <div className="font-mono text-xs font-bold text-gray-500 tracking-wider uppercase">
-                AGENTIC AI PLATFORM // {totalIncidents.toLocaleString()} REAL INCIDENTS // ROURKELA DISASTER DATASET
+                AGENTIC AI PLATFORM // {totalIncidents} INCIDENTS REGISTERED // ROURKELA DISASTER DATASET
               </div>
             </div>
 
@@ -119,7 +107,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
             </div>
           </div>
 
-          {/* Right Column: Big Green Graphic Card + Stat Boxes */}
+          {/* Right Column: Big Green Graphic Card + Stat Cards */}
           <div className="lg:col-span-4 flex flex-col gap-6 justify-between">
             
             {/* Big Green Brain Graphic Card */}
@@ -128,20 +116,20 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
               <Brain className="w-32 h-32 sm:w-40 sm:h-40 text-black stroke-[1.5] relative z-10 transition transform group-hover:scale-105" />
             </div>
 
-            {/* Bottom 2 Stat Cards */}
+            {/* Bottom Stat Cards */}
             <div className="grid grid-cols-2 gap-4">
               
-              {/* Stat 1 */}
+              {/* Stat 1: Real Incident Count */}
               <div className="bg-[#EAEFE8] border-2 border-black shadow-tactile p-4 space-y-1">
                 <div className="flex items-center justify-between">
                   <Database className="w-5 h-5 text-tactile-olive" />
                   <span className="w-2 h-2 rounded-full bg-tactile-accent animate-ping"></span>
                 </div>
                 <div className="font-mono font-black text-2xl sm:text-3xl text-black pt-2">
-                  {totalIncidents.toLocaleString()}
+                  {totalIncidents}
                 </div>
                 <div className="font-mono text-[10px] font-bold uppercase text-gray-600 leading-tight">
-                  REAL INCIDENTS ANALYZED
+                  INCIDENTS ANALYZED & PROCESSED
                 </div>
               </div>
 
@@ -166,13 +154,13 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
 
       </div>
 
-      {/* Agentic Workflow Visual Section matching screenshots */}
+      {/* Agentic Workflow Visual Section */}
       <AgenticWorkflow />
 
-      {/* Ticker Banner at Bottom matching screenshot */}
+      {/* Ticker Banner at Bottom */}
       <footer className="w-full bg-tactile-accent border-t-2 border-black py-2.5 px-4 overflow-hidden">
         <div className="font-mono text-xs font-bold text-black uppercase tracking-wider whitespace-nowrap flex items-center justify-between gap-8 animate-marquee">
-          <span>◆ 8,173 REAL INCIDENTS ANALYZED</span>
+          <span>◆ {totalIncidents} INCIDENTS ANALYZED & REGISTERED</span>
           <span>◆ GEMINI AI NLP EXTRACTION</span>
           <span>◆ SCIPY LINEAR SUM OPTIMIZATION</span>
           <span>◆ DETERMINISTIC 0-100 PRIORITY ENGINE</span>
@@ -184,4 +172,3 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 81
     </div>
   );
 }
-
