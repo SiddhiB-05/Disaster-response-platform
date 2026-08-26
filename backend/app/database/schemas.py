@@ -12,6 +12,8 @@ class IncidentCreate(BaseModel):
     description: str = Field(..., example="Water has entered several houses and 8 people are trapped. Two of them are elderly.")
     reporter_name: Optional[str] = Field(None, example="Siddhi B")
     contact_phone: Optional[str] = Field(None, example="+91 9876543210")
+    reporter_phone: Optional[str] = Field(None, example="+91 9876543210")
+    photo_url: Optional[str] = Field(None, example="https://images.unsplash.com/photo-1547683905-f686c993aae5")
     people_affected: Optional[int] = Field(None, example=8)
 
 class IncidentStatusUpdate(BaseModel):
@@ -30,6 +32,9 @@ class IncidentResponse(BaseModel):
     description: str
     reporter_name: Optional[str] = None
     contact_phone: Optional[str] = None
+    reporter_phone: Optional[str] = None
+    photo_url: Optional[str] = None
+    severity_color: Optional[str] = "GREEN"
     ai_severity: str
     people_affected: int
     vulnerable_people: bool
@@ -66,9 +71,9 @@ class ResourceResponse(BaseModel):
     name: str
     type: str
     capability: str
+    capacity: int
     latitude: float
     longitude: float
-    capacity: int
     status: str
     is_demo: bool
     updated_at: datetime
@@ -81,11 +86,11 @@ class ResourceStatusUpdate(BaseModel):
 
 # Disaster Alert Schemas
 class DisasterAlertCreate(BaseModel):
-    hazard_type: str = Field(..., example="FLOOD")
-    title: Optional[str] = Field(None, example="Flash Flood Warning Sector 6")
-    description: str = Field(..., example="Flash flood alert issued for Sector 6 and Koel Basin.")
-    severity: str = Field(..., example="Severe")
-    district: str = Field("Rourkela", example="Rourkela")
+    hazard_type: str = Field(..., example="Flood")
+    title: str = Field(..., example="Brahmani River Basin Flash Flood Warning")
+    description: str = Field(..., example="High water levels expected along sector 6 and sector 8 low-lying areas.")
+    severity: str = Field("Severe", example="Severe")
+    district: Optional[str] = "Rourkela"
     latitude: Optional[float] = 22.2604
     longitude: Optional[float] = 84.8536
     radius_km: Optional[float] = 15.0
@@ -123,6 +128,11 @@ class CriticalFacilityResponse(BaseModel):
     facility_type: str
     latitude: float
     longitude: float
+    address: Optional[str] = None
+    phone: Optional[str] = None
+    capacity: Optional[int] = 500
+    current_occupancy: Optional[int] = 120
+    contact_person: Optional[str] = None
     is_active: bool
 
     class Config:

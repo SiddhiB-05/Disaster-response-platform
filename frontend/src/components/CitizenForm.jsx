@@ -38,7 +38,9 @@ export default function CitizenForm({ onIncidentSubmitted, onNavigate }) {
   const [peopleAffected, setPeopleAffected] = useState(8);
   const [reporterName, setReporterName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [privacyConsent, setPrivacyConsent] = useState(true);
+
 
   const [loading, setLoading] = useState(false);
   const [gpsStatus, setGpsStatus] = useState('');
@@ -277,8 +279,8 @@ export default function CitizenForm({ onIncidentSubmitted, onNavigate }) {
             </p>
           </div>
 
-          {/* Optional Reporter Info */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 bg-gray-50 border-2 border-black">
+          {/* Optional Reporter Info & Photo Upload */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 bg-gray-50 border-2 border-black">
             <div>
               <label className="block text-[10px] font-bold text-gray-700 mb-1">REPORTER NAME (OPTIONAL)</label>
               <input
@@ -286,7 +288,7 @@ export default function CitizenForm({ onIncidentSubmitted, onNavigate }) {
                 value={reporterName}
                 onChange={(e) => setReporterName(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-black bg-white"
-                placeholder="e.g. Sidhi B"
+                placeholder="e.g. Siddhi B"
               />
             </div>
             <div>
@@ -296,10 +298,21 @@ export default function CitizenForm({ onIncidentSubmitted, onNavigate }) {
                 value={contactPhone}
                 onChange={(e) => setContactPhone(e.target.value)}
                 className="w-full px-3 py-1.5 border-2 border-black bg-white"
-                placeholder="e.g. +91 98765 43210"
+                placeholder="e.g. +91 94031 54066"
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold text-gray-700 mb-1">INCIDENT PHOTO URL (OPTIONAL)</label>
+              <input
+                type="url"
+                value={photoUrl || ''}
+                onChange={(e) => setPhotoUrl && setPhotoUrl(e.target.value)}
+                className="w-full px-3 py-1.5 border-2 border-black bg-white text-xs"
+                placeholder="https://... photo link"
               />
             </div>
           </div>
+
 
           {/* Consent Checkbox */}
           <div className="flex items-center gap-2 pt-1">

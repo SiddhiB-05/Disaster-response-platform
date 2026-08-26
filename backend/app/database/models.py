@@ -47,6 +47,11 @@ class Incident(Base):
     duplicate_warning = Column(Boolean, default=False)
     assigned_resource_id = Column(Integer, ForeignKey("resources.id"), nullable=True)
     
+    # Reporter Contact & Media Info
+    photo_url = Column(String, nullable=True)
+    reporter_phone = Column(String, nullable=True)
+    severity_color = Column(String, default="GREEN")       # RED, ORANGE, GREEN
+
     reported_at = Column(DateTime, default=datetime.utcnow, index=True)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     resolved_at = Column(DateTime, nullable=True)
@@ -134,10 +139,16 @@ class CriticalFacility(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    facility_type = Column(String, nullable=False)  # Hospital, Fire Station, Police Station, Shelter, Emergency Control Room
+    facility_type = Column(String, nullable=False)  # Hospital, Safe Shelter, Fire Station, Police Station, Emergency Control Room
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
+    address = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    capacity = Column(Integer, default=500)
+    current_occupancy = Column(Integer, default=120)
+    contact_person = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
+
 
 class Assignment(Base):
     __tablename__ = "assignments"

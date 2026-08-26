@@ -9,15 +9,106 @@ from app.scoring.priority_engine import priority_engine
 
 router = APIRouter(prefix="/api/v1/demo", tags=["Demo Controller"])
 
-# Rourkela Critical Facilities Seed Data
+# Rourkela Critical Facilities Seed Data (Safe Shelters, Hospitals, Control Centers)
 FACILITIES_SEED = [
-    {"name": "Rourkela Government Hospital (RGH)", "facility_type": "Hospital", "latitude": 22.2530, "longitude": 84.8510, "is_active": True},
-    {"name": "Sector 6 Emergency Command & Control Room", "facility_type": "Emergency Control Room", "latitude": 22.2604, "longitude": 84.8536, "is_active": True},
-    {"name": "Rourkela Central Fire Station", "facility_type": "Fire Station", "latitude": 22.2560, "longitude": 84.8450, "is_active": True},
-    {"name": "Brahmani River Highway Police Station", "facility_type": "Police Station", "latitude": 22.2420, "longitude": 84.8350, "is_active": True},
-    {"name": "DAV Public School Emergency Relief Shelter", "facility_type": "Shelter", "latitude": 22.2680, "longitude": 84.8620, "is_active": True},
-    {"name": "Sector 19 Community Relief Hall", "facility_type": "Shelter", "latitude": 22.2740, "longitude": 84.8710, "is_active": True}
+    {
+        "name": "Rourkela Government Hospital (RGH) Trauma Center",
+        "facility_type": "Hospital",
+        "latitude": 22.2530,
+        "longitude": 84.8510,
+        "address": "Panposh Road, Sector 19, Rourkela",
+        "phone": "+91 661-2540102 / 108",
+        "capacity": 450,
+        "current_occupancy": 310,
+        "contact_person": "Dr. A. K. Mohanty (Chief Medical Officer)",
+        "is_active": True
+    },
+    {
+        "name": "Hi-Tech Medical College & Emergency Hospital",
+        "facility_type": "Hospital",
+        "latitude": 22.2410,
+        "longitude": 84.8290,
+        "address": "Rourkela Bypass, Near Brahmani Bridge",
+        "phone": "+91 661-2400500",
+        "capacity": 300,
+        "current_occupancy": 180,
+        "contact_person": "Emergency Desk",
+        "is_active": True
+    },
+    {
+        "name": "CWS Hospital Sector 5 Emergency Center",
+        "facility_type": "Hospital",
+        "latitude": 22.2640,
+        "longitude": 84.8490,
+        "address": "Sector 5 Township, Rourkela",
+        "phone": "+91 661-2642222",
+        "capacity": 200,
+        "current_occupancy": 95,
+        "contact_person": "Medical Superintendent",
+        "is_active": True
+    },
+    {
+        "name": "NIT Rourkela Indoor Stadium Safe Shelter",
+        "facility_type": "Safe Shelter",
+        "latitude": 22.2505,
+        "longitude": 84.9048,
+        "address": "NIT Campus, Sector 1, Rourkela",
+        "phone": "+91 661-2462020",
+        "capacity": 1200,
+        "current_occupancy": 340,
+        "contact_person": "Prof. S. Das (Shelter Coordinator)",
+        "is_active": True
+    },
+    {
+        "name": "DAV Public School Sector 6 Cyclone & Flood Relief Shelter",
+        "facility_type": "Safe Shelter",
+        "latitude": 22.2680,
+        "longitude": 84.8620,
+        "address": "Sector 6 Housing Board, Rourkela",
+        "phone": "+91 661-2640888",
+        "capacity": 600,
+        "current_occupancy": 210,
+        "contact_person": "Principal Coordinator",
+        "is_active": True
+    },
+    {
+        "name": "Sector 19 Community Multi-Purpose Relief Hall",
+        "facility_type": "Safe Shelter",
+        "latitude": 22.2740,
+        "longitude": 84.8710,
+        "address": "Sector 19 Market Complex, Rourkela",
+        "phone": "+91 94370 12345",
+        "capacity": 800,
+        "current_occupancy": 150,
+        "contact_person": "District Red Cross Volunteer",
+        "is_active": True
+    },
+    {
+        "name": "Sector 6 Emergency Command & Control Room",
+        "facility_type": "Emergency Control Room",
+        "latitude": 22.2604,
+        "longitude": 84.8536,
+        "address": "Sector 6 Municipal Building",
+        "phone": "1077 (Toll-Free Helpline)",
+        "capacity": 100,
+        "current_occupancy": 45,
+        "contact_person": "District Magistrate Control Desk",
+        "is_active": True
+    },
+    {
+        "name": "Rourkela Central Fire Station & Rescue Depot",
+        "facility_type": "Fire Station",
+        "latitude": 22.2560,
+        "longitude": 84.8450,
+        "address": "Main Road, Sector 4, Rourkela",
+        "phone": "101 / +91 661-2540101",
+        "capacity": 50,
+        "current_occupancy": 20,
+        "contact_person": "Fire Station Officer",
+        "is_active": True
+    }
 ]
+
 
 # 10 Varied Rourkela Rescue Resources with distinct capabilities & statuses
 RESOURCES_SEED = [

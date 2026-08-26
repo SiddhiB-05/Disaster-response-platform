@@ -107,20 +107,38 @@ Return ONLY a strict JSON object with NO markdown tags or markdown codeblocks us
 }}
 """
         raw_text = ""
+        candidate_models = [self.model_name, "gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+
         if hasattr(self.client, "models"):
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt
-            )
-            raw_text = response.text
+            for m in candidate_models:
+                try:
+                    response = self.client.models.generate_content(
+                        model=m,
+                        contents=prompt
+                    )
+                    raw_text = response.text
+                    if raw_text:
+                        break
+                except Exception as model_err:
+                    print(f"[Gemini Service] Model {m} failed ({model_err}). Trying next candidate...")
         elif hasattr(self.client, "GenerativeModel"):
-            model = self.client.GenerativeModel("gemini-1.5-flash")
-            response = model.generate_content(prompt)
-            raw_text = response.text
+            for m in candidate_models:
+                try:
+                    model = self.client.GenerativeModel(m)
+                    response = model.generate_content(prompt)
+                    raw_text = response.text
+                    if raw_text:
+                        break
+                except Exception as model_err:
+                    print(f"[Gemini Service] Model {m} failed ({model_err}). Trying next candidate...")
+
+        if not raw_text:
+            raise ValueError("No text generated from Gemini API candidate models.")
 
         clean_json = re.sub(r"^```json\s*|\s*```$", "", raw_text.strip(), flags=re.MULTILINE).strip()
         parsed = json.loads(clean_json)
         return self._sanitize_extracted_data(parsed, type_hint)
+
 
     def _sanitize_extracted_data(self, data: Dict[str, Any], type_hint: str) -> Dict[str, Any]:
         inc_type = str(data.get("incident_type", "")).upper()

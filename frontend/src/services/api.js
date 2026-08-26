@@ -106,6 +106,22 @@ export const demoService = {
   }
 };
 
+export const extraService = {
+  getWeatherTelemetry: async () => {
+    const response = await api.get('/weather/telemetry');
+    return response.data;
+  },
+  getChatbotGuidance: async (data) => {
+    const response = await api.post('/chatbot/message', data);
+    return response.data;
+  },
+  getEmergencyContacts: async () => {
+    const response = await api.get('/emergency/contacts');
+    return response.data;
+  }
+};
+
+
 export function setupWebSocket(onEvent) {
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${wsProtocol}//localhost:8000/api/v1/ws`;

@@ -4,11 +4,12 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 from app.database.database import engine, Base, SessionLocal
-from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo
+from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo, extra_features
 from app.core.websocket import ws_manager
 
 # Create Database tables
 Base.metadata.create_all(bind=engine)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,10 +20,24 @@ async def lifespan(app: FastAPI):
         seed_demo_data(db)
         print("[Startup] PS-05 Disaster Platform Backend initialized and synthetic Rourkela demo data seeded.")
     except Exception as e:
-        print(f"[Startup] Note on auto-seeding: {e}")
-    finally:
+        print(f"[Startup] Table schema update needed ({e}). Re-indexing tables...")
         db.close()
+        try:
+            Base.metadata.drop_all(bind=engine)
+            Base.metadata.create_all(bind=engine)
+            db = SessionLocal()
+            from app.routes.demo import seed_demo_data
+            seed_demo_data(db)
+            print("[Startup] Database tables re-created with updated schema and demo data seeded!")
+        except Exception as err2:
+            print(f"[Startup] Warning on table refresh: {err2}")
+    finally:
+        try:
+            db.close()
+        except Exception:
+            pass
     yield
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -48,6 +63,7 @@ app.include_router(facilities.router)
 app.include_router(assignments.router)
 app.include_router(audit.router)
 app.include_router(demo.router)
+app.include_router(extra_features.router)
 
 # Backwards Compatible Route Aliases for legacy /api pathing
 app.include_router(incidents.router, prefix="/api", tags=["Incidents Legacy"])
@@ -56,6 +72,8 @@ app.include_router(alerts.router, prefix="/api", tags=["Alerts Legacy"])
 app.include_router(facilities.router, prefix="/api", tags=["Facilities Legacy"])
 app.include_router(assignments.router, prefix="/api", tags=["Assignments Legacy"])
 app.include_router(demo.router, prefix="/api", tags=["Demo Legacy"])
+app.include_router(extra_features.router, prefix="/api", tags=["Extra Features Legacy"])
+
 
 @app.websocket("/api/v1/ws")
 @app.websocket("/ws")

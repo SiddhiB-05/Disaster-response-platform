@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert }) {
   const tabs = [
@@ -9,8 +9,13 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
     { id: 'queue', label: 'PRIORITY QUEUE', icon: Activity },
     { id: 'scipy', label: 'SCIPY MATCHING', icon: Cpu },
     { id: 'map', label: 'TACTICAL MAP', icon: Map },
+    { id: 'shelters', label: 'SHELTERS & HOSPITALS', icon: Home },
+    { id: 'weather', label: 'WEATHER & RISK', icon: CloudRain },
+    { id: 'chatbot', label: 'AI CHATBOT', icon: Bot },
+    { id: 'offline', label: 'SMS & OFFLINE', icon: PhoneCall },
     { id: 'pipeline', label: 'GEMINI AI PIPELINE', icon: Layers },
   ];
+
 
   return (
     <header className="border-b-4 border-tactile-border bg-tactile-oliveHeader text-white">

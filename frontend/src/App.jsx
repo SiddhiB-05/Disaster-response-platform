@@ -6,6 +6,11 @@ import CitizenForm from './components/CitizenForm';
 import IncidentQueue from './components/IncidentQueue';
 import SciPyMatcher from './components/SciPyMatcher';
 import MapView from './components/MapView';
+import ShelterMedicalDirectory from './components/ShelterMedicalDirectory';
+import WeatherRiskPredictor from './components/WeatherRiskPredictor';
+import DisasterChatbot from './components/DisasterChatbot';
+import SmsIvrSimulator from './components/SmsIvrSimulator';
+import OfflineEmergencyInfo from './components/OfflineEmergencyInfo';
 import AIPipelineInspector from './components/AIPipelineInspector';
 import { incidentService, resourceService, facilityService, alertService, demoService, setupWebSocket } from './services/api';
 
@@ -124,10 +129,30 @@ export default function App() {
           />
         )}
 
+        {activeTab === 'shelters' && (
+          <ShelterMedicalDirectory />
+        )}
+
+        {activeTab === 'weather' && (
+          <WeatherRiskPredictor />
+        )}
+
+        {activeTab === 'chatbot' && (
+          <DisasterChatbot />
+        )}
+
+        {activeTab === 'offline' && (
+          <div className="space-y-8">
+            <SmsIvrSimulator />
+            <OfflineEmergencyInfo />
+          </div>
+        )}
+
         {activeTab === 'pipeline' && (
           <AIPipelineInspector />
         )}
       </main>
+
 
       <footer className="border-t-2 border-black bg-tactile-oliveDark text-white py-3 px-6 text-xs font-mono flex flex-wrap items-center justify-between">
         <div>
