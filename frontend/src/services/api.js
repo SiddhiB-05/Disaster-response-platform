@@ -78,6 +78,11 @@ export const assignmentService = {
     const response = await api.post('/assignments/confirm', { incident_id, resource_id, reason });
     return response.data;
   },
+  assignResource: async (incident_id, resource_id, reason) => {
+    const response = await api.post('/assignments/confirm', { incident_id, resource_id, reason });
+    return response.data;
+  },
+
   updateStatus: async (assignment_id, status) => {
     const response = await api.patch(`/assignments/${assignment_id}/status`, { status });
     return response.data;

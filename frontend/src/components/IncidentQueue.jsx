@@ -19,8 +19,10 @@ export default function IncidentQueue({ incidents, resources, onRefreshData }) {
       setTimeout(() => setAssignSuccessMsg(''), 4000);
     } catch (err) {
       console.error('Assignment error:', err);
-      alert('Failed to assign resource.');
+      const detail = err.response?.data?.detail || 'Failed to assign resource.';
+      alert(detail);
     } finally {
+
       setAssigningId(null);
     }
   };
