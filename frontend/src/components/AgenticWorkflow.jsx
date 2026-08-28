@@ -16,7 +16,7 @@ export default function AgenticWorkflow() {
   return (
     <div id="agent-workflow" className="w-full bg-transparent py-16 px-4 sm:px-6 text-tactile-border selection:bg-tactile-accent selection:text-black">
       <div className="max-w-6xl mx-auto space-y-16">
-        
+
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -28,15 +28,15 @@ export default function AgenticWorkflow() {
           <div className="inline-flex items-center justify-center w-12 h-12 bg-tactile-accent border-2 border-black shadow-tactile-sm mx-auto">
             <Brain className="w-7 h-7 text-black" />
           </div>
-          
+
           <h2 className="font-mono font-black text-4xl sm:text-5xl uppercase tracking-tight text-tactile-border">
             AGENTIC WORKFLOW
           </h2>
-          
+
           <p className="font-mono text-sm sm:text-base text-gray-700 max-w-xl mx-auto">
             Four AI agents transforming raw data into deployment plans.
           </p>
-          
+
           <motion.div
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
@@ -89,7 +89,7 @@ export default function AgenticWorkflow() {
 
         {/* Vertical Timeline Container */}
         <div className="relative py-8">
-          
+
           {/* Central Vertical Timeline Track with progressive height growth */}
           <motion.div
             initial={{ scaleY: 0 }}
@@ -100,7 +100,7 @@ export default function AgenticWorkflow() {
           />
 
           <div className="space-y-16">
-            
+
             {/* AGENT 01 (Left Card - Sage Green Background #7AA874) */}
             <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <motion.div

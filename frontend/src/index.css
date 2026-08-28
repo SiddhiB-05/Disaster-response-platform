@@ -4,25 +4,23 @@
 
 @layer base {
   body {
-    background-color: #E2E8E0;
-    background-image: 
-      linear-gradient(to right, rgba(30, 44, 29, 0.08) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(30, 44, 29, 0.08) 1px, transparent 1px);
-    background-size: 24px 24px;
+    background-color: transparent;
     font-family: 'Inter', sans-serif;
   }
-  
-  h1, h2, h3, h4, h5, h6, .font-mono {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
 }
 
 .tactile-grid-bg {
-  background-color: #E2E8E0;
-  background-image: 
-    linear-gradient(to right, rgba(30, 44, 29, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 44, 29, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background: transparent;
 }
 
 .tactile-box {
@@ -61,14 +59,17 @@
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #E2E8E0;
   border-left: 2px solid #1E2C1D;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #5C7C58;
   border: 1px solid #1E2C1D;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #456942;
 }
@@ -79,10 +80,12 @@
     transform: scale(0.95);
     opacity: 0.8;
   }
+
   70% {
     transform: scale(2.2);
     opacity: 0;
   }
+
   100% {
     transform: scale(2.2);
     opacity: 0;
@@ -98,18 +101,17 @@
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 .tactile-skeleton {
-  background: linear-gradient(
-    90deg,
-    #d8e0d6 25%,
-    #e8efe5 50%,
-    #d8e0d6 75%
-  );
+  background: linear-gradient(90deg,
+      #d8e0d6 25%,
+      #e8efe5 50%,
+      #d8e0d6 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.8s ease-in-out infinite;
   border: 1px solid #1E2C1D;
@@ -121,9 +123,11 @@
     opacity: 0;
     transform: scale(0.6) translateY(-8px);
   }
+
   70% {
     transform: scale(1.08) translateY(1px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -136,9 +140,21 @@
 
 /* Single Shake Nudge for Form Error */
 @keyframes single-nudge {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 .animate-nudge {
@@ -147,6 +163,7 @@
 
 /* Reduced Motion overrides */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {

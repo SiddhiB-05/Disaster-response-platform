@@ -78,11 +78,12 @@ export default function Tactical3DBackground({ activeTab = 'landing' }) {
 
   // Adjust layer opacity slightly depending on activeTab for optimal readability
   let layerOpacityClass = 'opacity-85';
-  if (activeTab === 'queue' || activeTab === 'scipy' || activeTab === 'shelters') {
-    layerOpacityClass = 'opacity-60';
+  if (activeTab === 'architecture' || activeTab === 'queue' || activeTab === 'scipy' || activeTab === 'shelters') {
+    layerOpacityClass = 'opacity-55';
   } else if (activeTab === 'report' || activeTab === 'chatbot' || activeTab === 'offline') {
     layerOpacityClass = 'opacity-50';
   }
+
 
   return (
     <div

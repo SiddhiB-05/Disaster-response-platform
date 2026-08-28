@@ -16,10 +16,10 @@ export default function TopographicGrid({
 
   // Create procedural low-poly terrain geometry with Brahmani-Koel river valley
   const { terrainGeometry, riverGeometry, gridLinesGeometry } = useMemo(() => {
-    const width = 44;
-    const height = 44;
-    const segmentsW = 28;
-    const segmentsH = 28;
+    const width = 120;
+    const height = 120;
+    const segmentsW = 40;
+    const segmentsH = 40;
 
     const planeGeo = new THREE.PlaneGeometry(width, height, segmentsW, segmentsH);
     const pos = planeGeo.attributes.position;
@@ -57,7 +57,7 @@ export default function TopographicGrid({
 
     // Procedural tactical river path line
     const riverPoints = [];
-    for (let y = -20; y <= 20; y += 0.8) {
+    for (let y = -60; y <= 60; y += 1.0) {
       const x = Math.sin(y * 0.18) * 3.5 + (y * 0.1);
       riverPoints.push(new THREE.Vector3(x, y, -0.15));
     }
@@ -65,12 +65,12 @@ export default function TopographicGrid({
 
     // Procedural tactical grid lines (fine monospaced tactical coordinates)
     const linePoints = [];
-    const step = 2.0;
-    for (let x = -20; x <= 20; x += step) {
-      linePoints.push(new THREE.Vector3(x, -20, 0.02), new THREE.Vector3(x, 20, 0.02));
+    const step = 3.0;
+    for (let x = -60; x <= 60; x += step) {
+      linePoints.push(new THREE.Vector3(x, -60, 0.02), new THREE.Vector3(x, 60, 0.02));
     }
-    for (let y = -20; y <= 20; y += step) {
-      linePoints.push(new THREE.Vector3(-20, y, 0.02), new THREE.Vector3(20, y, 0.02));
+    for (let y = -60; y <= 60; y += step) {
+      linePoints.push(new THREE.Vector3(-60, y, 0.02), new THREE.Vector3(60, y, 0.02));
     }
     const linesGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
 
@@ -80,6 +80,7 @@ export default function TopographicGrid({
       gridLinesGeometry: linesGeo,
     };
   }, []);
+
 
   // Shared tactical materials
   const materials = useMemo(() => {
@@ -133,9 +134,10 @@ export default function TopographicGrid({
   return (
     <group
       ref={gridRef}
-      rotation={[-Math.PI / 2.35, 0, 0]}
-      position={[0, -2.2, -2.5]}
+      rotation={[-Math.PI / 2.15, 0, 0]}
+      position={[0, -4, -10]}
     >
+
       {/* 1. Low-poly shaded terrain */}
       <mesh geometry={terrainGeometry} material={materials.terrain} receiveShadow />
 
