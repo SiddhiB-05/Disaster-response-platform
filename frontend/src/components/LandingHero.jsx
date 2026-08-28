@@ -27,9 +27,20 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
     }
   };
 
+  const handleExplorePlatform = () => {
+    const el = document.getElementById('explore-platform');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      onNavigate('architecture');
+    }
+  };
+
+
+
   return (
     <div className="w-full min-h-screen bg-transparent text-tactile-border flex flex-col justify-between selection:bg-tactile-accent selection:text-black">
-      
+
       {/* Top Navbar Header matching Image 2 (Bigger Width & Height) */}
       <header className="w-full bg-white/95 backdrop-blur-md border-b-2 border-black px-6 py-4 flex items-center justify-center sticky top-0 z-50 shadow-sm">
         <nav className="flex items-center justify-center gap-4 sm:gap-6 flex-wrap w-full max-w-7xl mx-auto" aria-label="Landing Navigation">
@@ -40,11 +51,10 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
                 key={tab.id}
                 onClick={() => onNavigate(tab.id)}
                 aria-current={isActive ? 'page' : undefined}
-                className={`relative px-6 py-2.5 font-mono text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-transform shadow-[4px_4px_0px_#1E2C1D] hover:-translate-y-0.5 ${
-                  isActive
-                    ? 'bg-[#6DBE5A] text-black'
-                    : 'bg-white text-black hover:bg-[#6DBE5A] hover:text-black'
-                }`}
+                className={`relative px-6 py-2.5 font-mono text-xs sm:text-sm font-black uppercase tracking-wider border-2 border-black transition-transform shadow-[4px_4px_0px_#1E2C1D] hover:-translate-y-0.5 ${isActive
+                  ? 'bg-[#6DBE5A] text-black'
+                  : 'bg-white text-black hover:bg-[#6DBE5A] hover:text-black'
+                  }`}
               >
                 {tab.label}
               </button>
@@ -57,10 +67,10 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
       {/* Main Hero Container */}
       <div className="max-w-7xl mx-auto w-full px-4 py-8 sm:py-12 flex-1 flex flex-col justify-center">
-        
+
         {/* Main Grid: Left Hero Main Card + Right Brain Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          
+
           {/* Left Hero Main Card */}
           <StaggerContainer
             stagger={0.06}
@@ -127,14 +137,15 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
               </motion.button>
 
               <motion.button
-                onClick={handleExploreWorkflow}
+                onClick={handleExplorePlatform}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 1 }}
                 className="group flex items-center justify-center gap-3 px-6 py-3.5 bg-[#E2E8E0] hover:bg-white text-black font-mono font-bold text-sm uppercase tracking-wider border-2 border-black shadow-tactile transition-colors"
               >
-                EXPLORE AGENTIC WORKFLOW
+                EXPLORE PLATFORM
                 <ArrowDown className="w-5 h-5 transition-transform group-hover:translate-y-0.5" />
               </motion.button>
+
 
               <motion.button
                 onClick={() => onNavigate('report')}
@@ -150,7 +161,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
           {/* Right Column: Big Green Graphic Card + Stat Cards */}
           <div className="lg:col-span-4 flex flex-col gap-6 justify-between">
-            
+
             {/* Big Green Brain Graphic Card with subtle ambient hover */}
             <motion.div
               variants={scaleReveal}
@@ -159,7 +170,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
               className="flex-1 bg-tactile-accent border-2 border-black shadow-[6px_6px_0px_#1E2C1D] p-8 flex items-center justify-center min-h-[260px] relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-[radial-gradient(#1E2C1D_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
-              
+
               <motion.div
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -171,7 +182,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
             {/* Bottom Stat Cards */}
             <div className="grid grid-cols-2 gap-4">
-              
+
               {/* Stat 1: Real Incident Count with AnimatedNumber */}
               <motion.div
                 variants={itemFadeUp}
@@ -221,8 +232,9 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
       </div>
 
       {/* EXPLORE PLATFORM Bento Grid Section matching Screenshot 1 */}
-      <div className="max-w-7xl mx-auto w-full px-4 py-8 space-y-6">
-        
+      <div id="explore-platform" className="max-w-7xl mx-auto w-full px-4 py-8 space-y-6">
+
+
         {/* Header Bar */}
         <div className="flex items-center justify-between border-b-2 border-black pb-3 font-mono">
           <div className="flex items-center gap-3">
@@ -242,7 +254,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
         {/* 3-Column Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          
+
           {/* Card 01: System Architecture (Tall Dark Green Card #162415) */}
           <motion.div
             onClick={() => onNavigate('architecture')}
@@ -276,7 +288,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
           {/* Middle Column: Card 02 (AI Agent Workflow) & Card 03 (Data Pipeline) */}
           <div className="md:col-span-4 flex flex-col gap-6 justify-between">
-            
+
             {/* Card 02: AI Agent Workflow (Bright Green Card #6DBE5A) */}
             <motion.div
               onClick={handleExploreWorkflow}
@@ -333,7 +345,7 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
           {/* Right Column: Card 04 (Live Dashboard) & Digital Clock */}
           <div className="md:col-span-4 flex flex-col gap-6 justify-between">
-            
+
             {/* Card 04: Live Dashboard (Light Cyan Card #8ADEE0) */}
             <motion.div
               onClick={() => onNavigate('queue')}

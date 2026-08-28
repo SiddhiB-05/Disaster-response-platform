@@ -1,60 +1,27 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false }) {
-  const navRef = useRef(null);
-
   const tabs = [
     { id: 'landing', label: 'HOME', icon: Activity },
     { id: 'architecture', label: 'ARCHITECTURE', icon: GitBranch },
-    { id: 'report', label: 'REPORT INCIDENT', icon: ShieldAlert },
+    { id: 'report', label: 'REPORT', icon: ShieldAlert },
     { id: 'queue', label: 'PRIORITY QUEUE', icon: Activity },
-    { id: 'scipy', label: 'SCIPY MATCHING', icon: Cpu },
+    { id: 'scipy', label: 'SCIPY MATCH', icon: Cpu },
     { id: 'map', label: 'TACTICAL MAP', icon: Map },
-    { id: 'shelters', label: 'SHELTERS & HOSPITALS', icon: Home },
+    { id: 'shelters', label: 'SHELTERS', icon: Home },
     { id: 'weather', label: 'WEATHER & RISK', icon: CloudRain },
     { id: 'chatbot', label: 'AI CHATBOT', icon: Bot },
-    { id: 'offline', label: 'SMS & OFFLINE', icon: PhoneCall },
+    { id: 'offline', label: 'OFFLINE SMS', icon: PhoneCall },
     { id: 'pipeline', label: 'AI PIPELINE', icon: Layers },
   ];
 
-  // Auto-scroll active tab into center view when activeTab changes
-  useEffect(() => {
-    if (navRef.current) {
-      const activeEl = navRef.current.querySelector(`[data-tab-id="${activeTab}"]`);
-      if (activeEl) {
-        activeEl.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        });
-      }
-    }
-  }, [activeTab]);
-
-  const handleTabClick = (tabId, e) => {
-    setActiveTab(tabId);
-    if (e && e.currentTarget) {
-      e.currentTarget.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center'
-      });
-    }
-  };
-
-  const handleManualScroll = (offset) => {
-    if (navRef.current) {
-      navRef.current.scrollBy({ left: offset, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <header className="border-b-4 border-black bg-[#162415] text-white">
+    <header className="border-b-4 border-black bg-[#162415] text-white w-full">
       
-      {/* 1. Top Ticker Status Bar - Scrolls smoothly off-screen with the page */}
-      <div className="flex flex-wrap items-center justify-between px-4 sm:px-6 py-2 bg-[#0F1A0E] text-xs font-mono border-b border-black">
+      {/* 1. Top Ticker Status Bar */}
+      <div className="flex flex-wrap items-center justify-between px-3 sm:px-6 py-1.5 bg-[#0F1A0E] text-xs font-mono border-b border-black">
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-[#6DBE5A]/20 border border-[#6DBE5A]/60 text-[#6DBE5A] font-extrabold text-[11px]">
             <span className="relative flex h-2 w-2">
@@ -83,8 +50,8 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
         </div>
       </div>
 
-      {/* 2. Main Header Branding Bar - Scrolls smoothly off-screen with the page */}
-      <div className="px-4 sm:px-6 py-3.5 bg-[#162415] border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+      {/* 2. Main Header Branding Bar */}
+      <div className="px-3 sm:px-6 py-3 bg-[#162415] border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#6DBE5A] text-black border-2 border-black flex items-center justify-center font-black shadow-tactile-sm shrink-0">
             <Radio className="w-6 h-6 text-black" />
@@ -105,55 +72,29 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
         </div>
       </div>
 
-      {/* 3. High-Contrast Navigation Tabs Bar - PINS PERFECTLY STICKY TO TOP 0 WITH AUTO-SCROLL */}
-      <div className="sticky top-0 z-50 bg-[#1E2C1D] border-b-2 border-black shadow-lg flex items-center px-2 py-2">
-        
-        {/* Left Scroll Chevron Arrow */}
-        <button
-          onClick={() => handleManualScroll(-220)}
-          className="p-1.5 bg-[#162415] hover:bg-[#6DBE5A] text-white hover:text-black border border-black rounded transition-colors shrink-0 mr-2"
-          title="Scroll Left"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-
-        {/* Horizontal Scrollable Tabs Container */}
-        <div
-          ref={navRef}
-          className="flex-1 overflow-x-auto scrollbar-none flex items-center gap-2 scroll-smooth py-0.5"
-        >
-          <nav className="flex items-center gap-2 min-w-max" aria-label="Dashboard Navigation">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  data-tab-id={tab.id}
-                  onClick={(e) => handleTabClick(tab.id, e)}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`relative flex items-center gap-2 px-3.5 py-1.5 font-mono text-xs font-black uppercase tracking-wider border-2 border-black transition-all shadow-[2px_2px_0px_#000] shrink-0 ${
-                    isActive
-                      ? 'bg-[#6DBE5A] text-black shadow-[3px_3px_0px_#000] -translate-y-0.5'
-                      : 'bg-white text-black hover:bg-[#6DBE5A] hover:text-black'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5 text-black" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Right Scroll Chevron Arrow */}
-        <button
-          onClick={() => handleManualScroll(220)}
-          className="p-1.5 bg-[#162415] hover:bg-[#6DBE5A] text-white hover:text-black border border-black rounded transition-colors shrink-0 ml-2"
-          title="Scroll Right"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
+      {/* 3. Non-Scrolling Fits-All Navigation Tabs Bar */}
+      <div className="sticky top-0 z-50 bg-[#1E2C1D] border-b-2 border-black shadow-lg px-2 py-2 w-full">
+        <nav className="flex flex-wrap items-center justify-between gap-1 w-full" aria-label="Dashboard Navigation">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                aria-current={isActive ? 'page' : undefined}
+                className={`flex-1 min-w-0 flex items-center justify-center gap-1 px-1.5 py-1.5 font-mono text-[10px] sm:text-[11px] font-black uppercase tracking-tight border-2 border-black transition-all shadow-[2px_2px_0px_#000] text-center ${
+                  isActive
+                    ? 'bg-[#6DBE5A] text-black shadow-[3px_3px_0px_#000] -translate-y-0.5 z-10'
+                    : 'bg-white text-black hover:bg-[#6DBE5A] hover:text-black'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5 text-black shrink-0 hidden xl:inline-block" />
+                <span className="truncate">{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* 4. Active Disaster Alert Bar */}
@@ -166,7 +107,7 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
             transition={{ duration: 0.2 }}
             role="alert"
             aria-live="assertive"
-            className="sticky top-[52px] z-40 overflow-hidden bg-red-700 text-white border-b-2 border-black"
+            className="sticky top-[48px] z-40 overflow-hidden bg-red-700 text-white border-b-2 border-black"
           >
             <div className="px-4 py-1.5 font-mono text-xs font-bold flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0 flex-1">
