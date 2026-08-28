@@ -35,10 +35,15 @@
   box-shadow: 2px 2px 0px #1E2C1D;
 }
 
+.tactile-box-lg {
+  border: 2px solid #1E2C1D;
+  box-shadow: 6px 6px 0px #1E2C1D;
+}
+
 .tactile-button {
   border: 2px solid #1E2C1D;
   box-shadow: 3px 3px 0px #1E2C1D;
-  transition: all 0.1s ease-in-out;
+  transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.12s cubic-bezier(0.2, 0, 0, 1), background-color 0.12s ease;
 }
 
 .tactile-button:hover {
@@ -66,4 +71,93 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #456942;
+}
+
+/* Radar Status Ping */
+@keyframes radar-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-radar {
+  animation: radar-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Skeleton Loading Shimmer */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.tactile-skeleton {
+  background: linear-gradient(
+    90deg,
+    #d8e0d6 25%,
+    #e8efe5 50%,
+    #d8e0d6 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  border: 1px solid #1E2C1D;
+}
+
+/* Leaflet Marker Pop-in */
+@keyframes marker-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(-8px);
+  }
+  70% {
+    transform: scale(1.08) translateY(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.custom-leaflet-icon {
+  animation: marker-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Single Shake Nudge for Form Error */
+@keyframes single-nudge {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-nudge {
+  animation: single-nudge 0.4s ease-out 1;
+}
+
+/* Reduced Motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .tactile-skeleton {
+    animation: none !important;
+    background: #d8e0d6 !important;
+  }
 }

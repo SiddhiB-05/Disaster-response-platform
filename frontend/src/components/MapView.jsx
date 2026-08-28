@@ -1,29 +1,58 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { MapPin, Navigation, Shield, Hospital, Building, AlertTriangle } from 'lucide-react';
 
+// Invalidate size component to handle tab switches smoothly
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
+
 // Custom Leaflet Markers using HTML DivIcon
-const createCustomIcon = (color, text) => {
+const createCustomIcon = (color, text, isHigh = false) => {
+  const radarHtml = isHigh
+    ? `<span style="
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background-color: ${color};
+        opacity: 0.5;
+        animation: radar-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        pointer-events: none;
+      "></span>`
+    : '';
+
   return L.divIcon({
     className: 'custom-leaflet-icon',
     html: `
-      <div style="
-        background-color: ${color};
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        border: 2px solid #000;
-        box-shadow: 2px 2px 0px #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        font-family: monospace;
-        font-weight: bold;
-        font-size: 11px;
-      ">
-        ${text}
+      <div style="position: relative; width: 28px; height: 28px;">
+        ${radarHtml}
+        <div style="
+          position: relative;
+          background-color: ${color};
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          border: 2px solid #000;
+          box-shadow: 2px 2px 0px #000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-family: monospace;
+          font-weight: bold;
+          font-size: 11px;
+        ">
+          ${text}
+        </div>
       </div>
     `,
     iconSize: [28, 28],
@@ -31,19 +60,25 @@ const createCustomIcon = (color, text) => {
   });
 };
 
-const redIcon = createCustomIcon('#E53E3E', '!');
+const redIcon = createCustomIcon('#E53E3E', '!', true);
 const yellowIcon = createCustomIcon('#DD6B20', '!');
 const greenIcon = createCustomIcon('#38A169', '!');
 const blueResourceIcon = createCustomIcon('#2B6CB0', 'R');
 const facilityIcon = createCustomIcon('#805AD5', 'F');
 
-export default function MapView({ incidents, resources, facilities }) {
+export default function MapView({ incidents = [], resources = [], facilities = [] }) {
   // Default Map Center: Rourkela Sector 6 (22.2604, 84.8536)
   const center = [22.2604, 84.8536];
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
-      <div className="bg-white p-5 tactile-box flex flex-wrap items-center justify-between">
+      {/* Header & Legend */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.22 }}
+        className="bg-white p-5 tactile-box flex flex-wrap items-center justify-between gap-4"
+      >
         <div>
           <span className="px-2 py-0.5 bg-tactile-oliveDark text-white font-mono text-xs font-bold uppercase">
             GIS LAYER // ROURKELA SECTOR 6 DISASTER ZONE
@@ -68,17 +103,23 @@ export default function MapView({ incidents, resources, facilities }) {
             <span className="w-3 h-3 rounded-full bg-purple-600 border border-black"></span> CRITICAL FACILITY
           </span>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Map Container */}
-      <div className="bg-white p-3 tactile-box">
-        <div className="h-[550px] w-full border-2 border-black">
+      {/* Map Container - Uses opacity only transition to preserve Leaflet coordinate maths */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white p-3 tactile-box"
+      >
+        <div className="h-[550px] w-full border-2 border-black relative">
           <MapContainer
             center={center}
             zoom={13}
             scrollWheelZoom={true}
             style={{ height: '100%', width: '100%' }}
           >
+            <MapResizer />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -144,7 +185,7 @@ export default function MapView({ incidents, resources, facilities }) {
             ))}
           </MapContainer>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

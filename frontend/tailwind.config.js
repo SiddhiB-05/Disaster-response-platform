@@ -29,6 +29,9 @@ export default {
         tactile: '4px 4px 0px #1E2C1D',
         'tactile-sm': '2px 2px 0px #1E2C1D',
         'tactile-lg': '6px 6px 0px #1E2C1D',
+      },
+      borderWidth: {
+        '3': '3px',
       }
     },
   },
