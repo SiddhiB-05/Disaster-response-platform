@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio } from 'lucide-react';
+import drishtiLogo from '../assets/drishti-logo.jpg';
 
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false }) {
   const tabs = [
@@ -31,7 +32,7 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
             SYSTEM STATUS: OPERATIONAL
           </span>
           <span className="hidden sm:inline text-gray-400 font-semibold text-[11px] tracking-wider uppercase">
-            PS-05 REAL-TIME DISASTER PLATFORM // ROURKELA ZONE
+            DRISHTi // REAL-TIME DISASTER INTELLIGENCE PLATFORM // ROURKELA ZONE
           </span>
         </div>
 
@@ -53,13 +54,15 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
       {/* 2. Main Header Branding Bar */}
       <div className="px-3 sm:px-6 py-3 bg-[#162415] border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#6DBE5A] text-black border-2 border-black flex items-center justify-center font-black shadow-tactile-sm shrink-0">
-            <Radio className="w-6 h-6 text-black" />
-          </div>
+          <img 
+            src={drishtiLogo} 
+            alt="DRISHTi Logo" 
+            className="w-10 h-10 object-contain rounded border-2 border-black bg-[#6DBE5A] shadow-tactile-sm shrink-0" 
+          />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-mono font-black text-base sm:text-lg leading-tight tracking-tight uppercase text-white">
-                DISASTER EARLY-WARNING & RESOURCE COORDINATION
+                DRISHTi // DISASTER EARLY-WARNING & RESOURCE COORDINATION
               </h1>
               <span className="px-2 py-0.5 bg-[#6DBE5A] text-black font-mono font-black text-[10px] uppercase border border-black hidden md:inline-block">
                 ROURKELA HQ

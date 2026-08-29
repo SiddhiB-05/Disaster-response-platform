@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, ArrowDown, Database, Cpu, Brain, ShieldCheck } from 'lucide-react';
+import drishtiLogo from '../assets/drishti-logo.jpg';
 import AgenticWorkflow from './AgenticWorkflow';
 import AnimatedNumber from './motion/AnimatedNumber';
 import Marquee from './motion/Marquee';
@@ -159,24 +160,28 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
             </StaggerItem>
           </StaggerContainer>
 
-          {/* Right Column: Big Green Graphic Card + Stat Cards */}
+          {/* Right Column: Big Green DRISHTI Logo Card + Stat Cards */}
           <div className="lg:col-span-4 flex flex-col gap-6 justify-between">
 
-            {/* Big Green Brain Graphic Card with subtle ambient hover */}
+            {/* Big Green DRISHTI Logo Card with subtle ambient hover */}
             <motion.div
               variants={scaleReveal}
               initial="initial"
               animate="animate"
-              className="flex-1 bg-tactile-accent border-2 border-black shadow-[6px_6px_0px_#1E2C1D] p-8 flex items-center justify-center min-h-[260px] relative overflow-hidden group"
+              className="flex-1 bg-[#6DBE5A] border-2 border-black shadow-[6px_6px_0px_#1E2C1D] p-5 sm:p-6 flex flex-col items-center justify-center min-h-[270px] relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-[radial-gradient(#1E2C1D_1px,transparent_1px)] [background-size:16px_16px] opacity-20"></div>
 
               <motion.div
-                animate={{ y: [0, -3, 0] }}
+                animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative z-10"
+                className="relative z-10 w-full flex flex-col items-center justify-center"
               >
-                <Brain className="w-32 h-32 sm:w-40 sm:h-40 text-black stroke-[1.5] transition-transform duration-300 group-hover:scale-105" />
+                <img
+                  src={drishtiLogo}
+                  alt="DRISHTi - Detect • Respond • Protect"
+                  className="w-full max-w-[280px] sm:max-w-[320px] h-auto object-contain rounded-xl border-2 border-black shadow-[4px_4px_0px_#1E2C1D] transition-transform duration-300 group-hover:scale-105"
+                />
               </motion.div>
             </motion.div>
 
