@@ -129,7 +129,9 @@ export const extraService = {
 
 export function setupWebSocket(onEvent) {
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = `${wsProtocol}//localhost:8000/api/v1/ws`;
+  const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const defaultWsHost = isLocalDev && window.location.port === '5173' ? 'localhost:8000' : window.location.host;
+  const wsUrl = `${wsProtocol}//${defaultWsHost}/api/v1/ws`;
   
   let ws = null;
   let reconnectTimer = null;
