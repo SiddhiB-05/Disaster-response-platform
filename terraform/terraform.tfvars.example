@@ -3,27 +3,14 @@ aws_region   = "ap-south-1"
 environment  = "production"
 project_name = "disaster-response-platform"
 
-# Network Configuration
-# Set enable_nat_gateway to true if you want ECS tasks strictly in private subnets with NAT GW
-enable_nat_gateway = false
+# Sizing for 30-40 Hackathon Users (Costs ~$7.50 - $8.50/month total)
+# Options: "t3.small" (2 vCPU, 2 GB RAM ~$7.50/mo) | "t3.micro" (1 GB RAM - Free Tier $0.00/mo)
+instance_type = "t3.small"
+volume_size   = 20
 
-# Database Configuration
-db_instance_class        = "db.t4g.micro"
-db_allocated_storage     = 20
-db_max_allocated_storage = 50
-db_name                  = "disaster_db"
-db_username              = "disaster_admin"
-# db_password            = "YourStrongPasswordHere123!" # Optional: Leave commented to auto-generate secure password
+# GitHub Repository to clone
+github_repo_url = "https://github.com/smit45-m/Disaster-response-platform.git"
 
-# ECS Container Sizing
-backend_cpu            = 256
-backend_memory         = 512
-backend_desired_count  = 1
-
-frontend_cpu           = 256
-frontend_memory        = 512
-frontend_desired_count = 1
-
-# Gemini AI Integration (Optional)
+# Optional Gemini AI API Key
 # gemini_api_key = "AIzaSy..."
 # gemini_model   = "gemini-2.5-flash"

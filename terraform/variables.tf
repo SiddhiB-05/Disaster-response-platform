@@ -1,160 +1,55 @@
 variable "aws_region" {
   type        = string
-  description = "AWS region to deploy infrastructure"
+  description = "AWS Region to deploy the platform"
   default     = "ap-south-1"
 }
 
 variable "environment" {
   type        = string
-  description = "Environment name (e.g. dev, staging, production)"
+  description = "Deployment environment name"
   default     = "production"
 }
 
 variable "project_name" {
   type        = string
-  description = "Base project name used for resource naming and tagging"
+  description = "Project name used for tagging and resource naming"
   default     = "disaster-response-platform"
 }
 
-variable "vpc_cidr" {
+variable "instance_type" {
   type        = string
-  description = "CIDR block for the VPC"
-  default     = "10.0.0.0/16"
+  description = "EC2 instance type (t3.small: 2 vCPU/2GB RAM ~$7.50/mo, t3.micro: Free Tier $0.00/mo, t4g.small: ARM64 ~$6.00/mo)"
+  default     = "t3.small"
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "List of availability zones for multi-AZ deployment"
-  default     = ["ap-south-1a", "ap-south-1b"]
-}
-
-variable "public_subnet_cidrs" {
-  type        = list(string)
-  description = "CIDR blocks for public subnets (ALB, NAT)"
-  default     = ["10.0.1.0/24", "10.0.2.0/24"]
-}
-
-variable "private_app_subnet_cidrs" {
-  type        = list(string)
-  description = "CIDR blocks for private application subnets (ECS tasks)"
-  default     = ["10.0.11.0/24", "10.0.12.0/24"]
-}
-
-variable "private_db_subnet_cidrs" {
-  type        = list(string)
-  description = "CIDR blocks for private database subnets (RDS PostgreSQL)"
-  default     = ["10.0.21.0/24", "10.0.22.0/24"]
-}
-
-variable "enable_nat_gateway" {
-  type        = bool
-  description = "Whether to provision a NAT Gateway for ECS tasks in private subnets. Set false for cost-effective deployment with tasks placed in public subnets with public IP."
-  default     = false
-}
-
-# --- Database Variables ---
-variable "db_allocated_storage" {
+variable "volume_size" {
   type        = number
-  description = "Allocated storage for RDS PostgreSQL (in GB)"
+  description = "EBS Root Volume size in GB (gp3 SSD)"
   default     = 20
 }
 
-variable "db_max_allocated_storage" {
-  type        = number
-  description = "Maximum storage limit for RDS auto-scaling (in GB)"
-  default     = 50
-}
-
-variable "db_instance_class" {
+variable "github_repo_url" {
   type        = string
-  description = "RDS PostgreSQL instance type (Free Tier eligible: db.t4g.micro or db.t3.micro)"
-  default     = "db.t4g.micro"
+  description = "GitHub repository URL to clone on the server"
+  default     = "https://github.com/smit45-m/Disaster-response-platform.git"
 }
 
-variable "db_engine_version" {
-  type        = string
-  description = "PostgreSQL engine version"
-  default     = "15.7"
-}
-
-variable "db_name" {
-  type        = string
-  description = "PostgreSQL database name"
-  default     = "disaster_db"
-}
-
-variable "db_username" {
-  type        = string
-  description = "Master username for PostgreSQL database"
-  default     = "disaster_admin"
-}
-
-variable "db_password" {
-  type        = string
-  description = "Master password for PostgreSQL. If left empty, a secure random password is generated."
-  default     = ""
-  sensitive   = true
-}
-
-# --- ECS Container Specifications ---
-variable "backend_cpu" {
-  type        = number
-  description = "CPU units for backend ECS task (256 = 0.25 vCPU)"
-  default     = 256
-}
-
-variable "backend_memory" {
-  type        = number
-  description = "Memory (in MB) for backend ECS task (512 = 0.5 GB)"
-  default     = 512
-}
-
-variable "backend_desired_count" {
-  type        = number
-  description = "Desired number of running backend container instances"
-  default     = 1
-}
-
-variable "frontend_cpu" {
-  type        = number
-  description = "CPU units for frontend ECS task (256 = 0.25 vCPU)"
-  default     = 256
-}
-
-variable "frontend_memory" {
-  type        = number
-  description = "Memory (in MB) for frontend ECS task (512 = 0.5 GB)"
-  default     = 512
-}
-
-variable "frontend_desired_count" {
-  type        = number
-  description = "Desired number of running frontend container instances"
-  default     = 1
-}
-
-# --- Application Configuration ---
 variable "gemini_api_key" {
   type        = string
-  description = "Google Gemini API Key for disaster report NLP analysis (optional; heuristic fallback active if blank)"
+  description = "Google Gemini API key for AI-based disaster report analysis (optional)"
   default     = ""
   sensitive   = true
 }
 
 variable "gemini_model" {
   type        = string
-  description = "Gemini model version for disaster incident extraction"
+  description = "Gemini model version"
   default     = "gemini-2.5-flash"
 }
 
-variable "backend_image_tag" {
+variable "postgres_password" {
   type        = string
-  description = "Docker image tag for backend container"
-  default     = "latest"
-}
-
-variable "frontend_image_tag" {
-  type        = string
-  description = "Docker image tag for frontend container"
-  default     = "latest"
+  description = "PostgreSQL password for local database container"
+  default     = "disaster_secure_pass_2026"
+  sensitive   = true
 }

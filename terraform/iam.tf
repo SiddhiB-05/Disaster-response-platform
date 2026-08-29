@@ -1,10 +1,9 @@
 # ==============================================================================
-# IAM Roles for Amazon ECS Fargate
+# IAM Role and Instance Profile for EC2 & SSM CI/CD
 # ==============================================================================
 
-# 1. ECS Task Execution Role (used by AWS ECS agent to pull images and push logs)
-resource "aws_iam_role" "ecs_execution_role" {
-  name = "${var.project_name}-${var.environment}-ecs-execution-role"
+resource "aws_iam_role" "ec2_role" {
+  name = "${var.project_name}-${var.environment}-ec2-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -13,40 +12,25 @@ resource "aws_iam_role" "ecs_execution_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "ecs-tasks.amazonaws.com"
+          Service = "ec2.amazonaws.com"
         }
       }
     ]
   })
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-ecs-execution-role"
+    Name = "${var.project_name}-${var.environment}-ec2-role"
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy" {
-  role       = aws_iam_role.ecs_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+# Attach SSM Managed Policy for AWS Systems Manager Session Manager & CI/CD deployment
+resource "aws_iam_role_policy_attachment" "ssm_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# 2. ECS Task Role (used by the running container application)
-resource "aws_iam_role" "ecs_task_role" {
-  name = "${var.project_name}-${var.environment}-ecs-task-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-
-  tags = {
-    Name = "${var.project_name}-${var.environment}-ecs-task-role"
-  }
+# Instance Profile attached to the EC2 instance
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "${var.project_name}-${var.environment}-instance-profile"
+  role = aws_iam_role.ec2_role.name
 }
