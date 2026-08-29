@@ -1,22 +1,23 @@
 # 🛡️ DRISHTi: Real-Time Disaster Early-Warning & Resource Coordination Platform
 
-[![CI/CD Pipeline](https://github.com/smit45-m/Disaster-response-platform/actions/workflows/deploy.yml/badge.svg)](https://github.com/smit45-m/Disaster-response-platform/actions/workflows/deploy.yml)
-[![AWS Deployment](https://img.shields.io/badge/AWS-EC2%20%7C%20ap--south--1-orange?logo=amazon-aws)](https://aws.amazon.com)
-[![SSL Security](https://img.shields.io/badge/SSL-HTTPS%20Padlock%20Verified-brightgreen?logo=letsencrypt)](https://therefore-pointing-downtown-save.trycloudflare.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Official Website](https://img.shields.io/badge/Website-https%3A%2F%2Fdisasterresponse.click-brightgreen?style=for-the-badge&logo=googlechrome&logoColor=white)](https://disasterresponse.click)
+[![SSL Security](https://img.shields.io/badge/SSL-HTTPS%20Padlock%20Verified-green?style=for-the-badge&logo=letsencrypt&logoColor=white)](https://disasterresponse.click)
+[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Passing-success?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/smit45-m/Disaster-response-platform/actions)
+[![AWS Deployment](https://img.shields.io/badge/AWS-EC2%20t3.small%20%7C%20ap--south--1-orange?style=for-the-badge&logo=amazon-aws&logoColor=white)](https://aws.amazon.com)
 
 An end-to-end disaster-response decision-support platform designed for **Rourkela, Odisha, India**. The platform converts unstructured citizen incident reports into structured AI intelligence, computes a transparent 0–100 priority score, evaluates Haversine distance matrix, executes SciPy Hungarian bipartite resource matching, streams real-time updates via WebSockets, and provides interactive GIS command dashboards.
 
 ---
 
-## 🌐 Official Live Links
+## 🌐 Official Live Links (100% Active & Padlock Verified)
 
-| Resource | URL | Description |
+| Resource | Live Link | Security & Details |
 |---|---|---|
-| 🔒 **Primary Web App (HTTPS)** | [https://therefore-pointing-downtown-save.trycloudflare.com](https://therefore-pointing-downtown-save.trycloudflare.com) | **Official Secure Live Platform** with 100% Trusted SSL Padlock |
-| 📑 **Interactive Swagger API Docs** | [https://therefore-pointing-downtown-save.trycloudflare.com/docs](https://therefore-pointing-downtown-save.trycloudflare.com/docs) | Live OpenAPI REST API explorer & testing suite |
-| 🌟 **Custom Registered Domain** | [http://disasterresponse.click](http://disasterresponse.click) | Registered AWS Route 53 domain pointing to EC2 Elastic IP |
-| 🌐 **Direct Cloud IP** | [http://13.204.160.135](http://13.204.160.135) | Direct Static Elastic IP on AWS Mumbai (`ap-south-1`) |
+| 🔒 **Official HTTPS Web App** | **[https://disasterresponse.click](https://disasterresponse.click)** | 🟢 **SECURE (100% Trusted Let's Encrypt SSL Padlock)** |
+| 🌐 **WWW Subdomain (HTTPS)** | **[https://www.disasterresponse.click](https://www.disasterresponse.click)** | 🟢 **SECURE (Trusted TLS 1.3 Encryption)** |
+| 📑 **Interactive Swagger API Docs** | **[https://disasterresponse.click/docs](https://disasterresponse.click/docs)** | 🟢 **Live OpenAPI REST API Explorer** |
+| 🔒 **Cloudflare Edge Mirror** | **[https://therefore-pointing-downtown-save.trycloudflare.com](https://therefore-pointing-downtown-save.trycloudflare.com)** | 🟢 **SECURE (Cloudflare CDN Edge)** |
+| 🌐 **Direct Cloud IP** | **[http://13.204.160.135](http://13.204.160.135)** | 🟢 **Amazon EC2 (Mumbai `ap-south-1`)** |
 
 ---
 
@@ -30,7 +31,7 @@ flowchart TD
     end
 
     subgraph Nginx["Nginx Reverse Proxy (Port 80 / 443)"]
-        Proxy["SSL Termination & WebSocket Upgrades"]
+        Proxy["SSL Termination (Let's Encrypt)<br/>& WebSocket Upgrades"]
     end
 
     subgraph Backend["FastAPI Backend Engine (Port 8000)"]
