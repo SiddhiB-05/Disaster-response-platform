@@ -63,6 +63,16 @@ services:
     networks:
       - disaster_net
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: disaster_cloudflared
+    restart: always
+    command: tunnel --url http://nginx:80
+    depends_on:
+      - nginx
+    networks:
+      - disaster_net
+
 volumes:
   postgres_data:
     driver: local
