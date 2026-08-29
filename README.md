@@ -1,6 +1,22 @@
-# PS-05: Real-Time Disaster Early-Warning & Resource Coordination Platform
+# 🛡️ DRISHTi: Real-Time Disaster Early-Warning & Resource Coordination Platform
 
-An end-to-end disaster-response decision-support platform designed for **Rourkela, Odisha, India**. The platform converts unstructured citizen incident reports into structured AI intelligence, computes a transparent 0–100 priority score, evaluates Haversine distance matrix, executes SciPy Hungarian bipartite resource matching, streams real-time updates via WebSockets, and provides a Streamlit PyDeck 3D command dashboard.
+[![CI/CD Pipeline](https://github.com/smit45-m/Disaster-response-platform/actions/workflows/deploy.yml/badge.svg)](https://github.com/smit45-m/Disaster-response-platform/actions/workflows/deploy.yml)
+[![AWS Deployment](https://img.shields.io/badge/AWS-EC2%20%7C%20ap--south--1-orange?logo=amazon-aws)](https://aws.amazon.com)
+[![SSL Security](https://img.shields.io/badge/SSL-HTTPS%20Padlock%20Verified-brightgreen?logo=letsencrypt)](https://therefore-pointing-downtown-save.trycloudflare.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+An end-to-end disaster-response decision-support platform designed for **Rourkela, Odisha, India**. The platform converts unstructured citizen incident reports into structured AI intelligence, computes a transparent 0–100 priority score, evaluates Haversine distance matrix, executes SciPy Hungarian bipartite resource matching, streams real-time updates via WebSockets, and provides interactive GIS command dashboards.
+
+---
+
+## 🌐 Official Live Links
+
+| Resource | URL | Description |
+|---|---|---|
+| 🔒 **Primary Web App (HTTPS)** | [https://therefore-pointing-downtown-save.trycloudflare.com](https://therefore-pointing-downtown-save.trycloudflare.com) | **Official Secure Live Platform** with 100% Trusted SSL Padlock |
+| 📑 **Interactive Swagger API Docs** | [https://therefore-pointing-downtown-save.trycloudflare.com/docs](https://therefore-pointing-downtown-save.trycloudflare.com/docs) | Live OpenAPI REST API explorer & testing suite |
+| 🌟 **Custom Registered Domain** | [http://disasterresponse.click](http://disasterresponse.click) | Registered AWS Route 53 domain pointing to EC2 Elastic IP |
+| 🌐 **Direct Cloud IP** | [http://13.204.160.135](http://13.204.160.135) | Direct Static Elastic IP on AWS Mumbai (`ap-south-1`) |
 
 ---
 
@@ -9,22 +25,30 @@ An end-to-end disaster-response decision-support platform designed for **Rourkel
 ```mermaid
 flowchart TD
     subgraph Clients["User Interfaces"]
-        CitizenUI["Citizen React Frontend<br/>(Port 5173 - Neo-Brutalist)"]
-        DashboardUI["Authority Command Dashboard<br/>(Port 8501 - Streamlit PyDeck 3D)"]
+        CitizenUI["Citizen React Frontend<br/>(Neo-Brutalist DRISHTi UI)"]
+        DashboardUI["Authority Command Dashboard<br/>(Tactical Map & Queue)"]
     end
 
-    subgraph Backend["FastAPI Backend (Port 8000)"]
+    subgraph Nginx["Nginx Reverse Proxy (Port 80 / 443)"]
+        Proxy["SSL Termination & WebSocket Upgrades"]
+    end
+
+    subgraph Backend["FastAPI Backend Engine (Port 8000)"]
         API["FastAPI REST & WebSocket Controllers<br/>(/api/v1)"]
         GeminiService["Gemini AI & Fallback NLP Extractor"]
         ScoringEngine["Transparent Priority Engine (0-100)"]
         SciPyOptimizer["SciPy Allocation Engine<br/>(linear_sum_assignment)"]
         HaversineMath["Haversine Distance Calculator"]
         WSManager["WebSocket Event Broadcaster"]
-        DB[(SQLAlchemy ORM<br/>SQLite / PostgreSQL)]
     end
 
-    CitizenUI -->|POST /api/v1/incidents| API
-    DashboardUI -->|GET /api/v1/incidents & POST /assignments/confirm| API
+    subgraph Database["Relational Store (Port 5432)"]
+        DB[(PostgreSQL 15 / Persistent Volume)]
+    end
+
+    CitizenUI -->|HTTPS / WSS| Proxy
+    DashboardUI -->|HTTPS / WSS| Proxy
+    Proxy --> API
     
     API --> GeminiService
     API --> ScoringEngine
@@ -34,8 +58,7 @@ flowchart TD
     
     API --> DB
     API --> WSManager
-    WSManager -.->|Real-time WS Events| CitizenUI
-    WSManager -.->|Real-time WS Events| DashboardUI
+    WSManager -.->|Real-time WS Events| Proxy
 ```
 
 ---
@@ -56,34 +79,15 @@ docker compose up --build
 
 ---
 
-## 🚀 Manual Local Setup
+## 🚀 Production AWS Deployment (<$10/Month)
 
-### 1. Backend Setup
-
-```bash
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 -m app.main
-```
-
-### 2. Citizen Frontend Setup
+The platform is deployed on **AWS EC2 (Mumbai `ap-south-1`)** with persistent PostgreSQL 15, FastAPI, React 18, and Nginx.
 
 ```bash
-cd frontend
-npm install
-npm run dev
-```
-
-### 3. Streamlit Command Dashboard Setup
-
-```bash
-cd dashboard
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-streamlit run streamlit_app.py
+# Provision Infrastructure
+cd terraform
+terraform init
+terraform apply -auto-approve
 ```
 
 ---
@@ -94,9 +98,9 @@ streamlit run streamlit_app.py
 |---|---|---|
 | `GEMINI_API_KEY` | *(Optional)* | Google Gemini API key. If omitted or API fails, heuristic fallback parser is active. |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Gemini model version for structured JSON extraction. |
-| `DATABASE_URL` | `sqlite:///./disaster_response.db` | Database connection URI (SQLite default, swappable to PostgreSQL). |
+| `DATABASE_URL` | `postgresql://...` | Database connection URI (PostgreSQL 15 in production, SQLite in dev). |
 | `API_BASE_URL` | `http://localhost:8000/api/v1` | Backend API URL for dashboard & frontend communication. |
-| `VITE_API_BASE_URL` | `http://localhost:8000/api/v1` | React frontend Vite backend endpoint. |
+| `VITE_API_BASE_URL` | `/api/v1` | React frontend Vite backend endpoint. |
 
 ---
 
@@ -137,24 +141,24 @@ $$\text{Cost}_{i, j} = \text{Distance}_{\text{km}} + 0.75 \times (100 - P_i) + \
 
 ## 🎬 3-Minute Hackathon Demo Script
 
-1. **Trigger Alert**: Open Streamlit Dashboard (`http://localhost:8501`), click **⚡ TRIGGER SYNTHETIC ALERT** for Flood in Rourkela.
-2. **Verify Alert**: Observe live alert ticker in Citizen Portal (`http://localhost:5173`).
+1. **Trigger Alert**: Click **⚡ TRIGGER SYNTHETIC ALERT** for Flood in Rourkela.
+2. **Verify Alert**: Observe live alert ticker in Citizen Portal.
 3. **Submit Citizen Report**: Click sample chip: *"Water has entered several houses and 8 people are trapped. Two of them are elderly."*
 4. **Inspect AI & Score**: Observe structured extraction (8 people, vulnerable true, High severity) and HIGH priority classification score ($\ge 70$).
-5. **Inspect 3D Map**: View incident column on PyDeck 3D map in Streamlit dashboard.
+5. **Inspect 3D Map**: View incident column on tactical map.
 6. **Run SciPy Optimizer**: Click **⚙️ RUN SCIPY OPTIMIZE ALGORITHM**, inspect match recommendations, distance, ETA, and cost.
 7. **Confirm Dispatch**: Click **CONFIRM DISPATCH**. Observe resource change `AVAILABLE` $\rightarrow$ `BUSY` and incident change to `ASSIGNED`.
 8. **Complete Lifecycle**: Advance assignment to `COMPLETED`. Verify resource returns to `AVAILABLE` and incident becomes `RESOLVED`.
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & CI/CD
 
 Run backend unit & integration tests:
 
 ```bash
 cd backend
-PYTHONPATH=. ./venv/bin/pytest app/tests/ -v
+PYTHONPATH=. pytest app/tests/ -v
 ```
 
 Run frontend build check:
@@ -163,22 +167,3 @@ Run frontend build check:
 cd frontend
 npm run build
 ```
-
----
-
-## 🐘 Replacing SQLite with PostgreSQL / PostGIS
-
-To switch from SQLite to PostgreSQL/PostGIS:
-
-1. Update `.env`:
-   ```env
-   DATABASE_URL=postgresql://user:password@localhost:5432/disaster_db
-   ```
-2. Enable PostGIS extension:
-   ```sql
-   CREATE EXTENSION IF NOT EXISTS postgis;
-   ```
-3. Run Alembic migrations:
-   ```bash
-   alembic upgrade head
-   ```
