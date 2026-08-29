@@ -51,7 +51,7 @@ jobs:
     name: 🚀 Deploy to AWS EC2
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID != ''
+    if: github.ref == 'refs/heads/main' && github.repository == 'smit45-m/Disaster-response-platform'
 
     steps:
       - name: Checkout Code
