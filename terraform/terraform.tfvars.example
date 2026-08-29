@@ -1,0 +1,29 @@
+# AWS Region and Environment
+aws_region   = "ap-south-1"
+environment  = "production"
+project_name = "disaster-response-platform"
+
+# Network Configuration
+# Set enable_nat_gateway to true if you want ECS tasks strictly in private subnets with NAT GW
+enable_nat_gateway = false
+
+# Database Configuration
+db_instance_class        = "db.t4g.micro"
+db_allocated_storage     = 20
+db_max_allocated_storage = 50
+db_name                  = "disaster_db"
+db_username              = "disaster_admin"
+# db_password            = "YourStrongPasswordHere123!" # Optional: Leave commented to auto-generate secure password
+
+# ECS Container Sizing
+backend_cpu            = 256
+backend_memory         = 512
+backend_desired_count  = 1
+
+frontend_cpu           = 256
+frontend_memory        = 512
+frontend_desired_count = 1
+
+# Gemini AI Integration (Optional)
+# gemini_api_key = "AIzaSy..."
+# gemini_model   = "gemini-2.5-flash"
