@@ -57,6 +57,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
+      - certbot_data:/var/www/certbot:ro
     depends_on:
       - backend
       - frontend
@@ -75,6 +76,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  certbot_data:
     driver: local
 
 networks:
