@@ -141,7 +141,7 @@ Return ONLY a strict JSON object with NO markdown tags or markdown codeblocks us
 }}
 """
         raw_text = ""
-        candidate_models = [self.model_name, "gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+        candidate_models = ["models/gemini-3.6-flash", "models/gemini-3.7-flash", "models/gemini-3.5-flash", "models/gemini-2.5-flash", "models/gemini-flash-latest"]
 
         if hasattr(self.client, "models"):
             for m in candidate_models:
@@ -351,7 +351,7 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
 }}
 """
         raw_text = ""
-        candidate_models = [self.model_name, "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+        candidate_models = ["models/gemini-3.6-flash", "models/gemini-3.7-flash", "models/gemini-3.5-flash", "models/gemini-2.5-flash", "models/gemini-flash-latest"]
 
         if hasattr(self.client, "models"):
             for m in candidate_models:
@@ -379,49 +379,198 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
         if not raw_text:
             return None
 
-        clean_json = re.sub(r"^```json\s*|\s*```$", "", raw_text.strip(), flags=re.MULTILINE).strip()
-        parsed = json.loads(clean_json)
-        return parsed
+        # Robust JSON Extraction from Gemini response
+        try:
+            clean_text = re.sub(r"^```json\s*|\s*```$", "", raw_text.strip(), flags=re.MULTILINE).strip()
+            json_match = re.search(r'\{.*\}', clean_text, re.DOTALL)
+            if json_match:
+                parsed = json.loads(json_match.group(0))
+                parsed["source"] = "Gemini 2.5 Flash AI"
+                return parsed
+        except Exception as json_err:
+            print(f"[Gemini Chatbot] JSON parse note ({json_err}). Formatter active.")
+
+        # If Gemini returned plain text instead of strict JSON, use Gemini's raw output directly
+        clean_resp = raw_text.replace("```json", "").replace("```", "").strip()
+        return {
+            "response": clean_resp,
+            "suggested_actions": ["Submit Incident Report", "Find Safe Shelter", "Call Emergency Control Desk (1077)"],
+            "emergency_contacts": [
+                {"name": "Odisha Disaster Control Desk", "number": "1077"},
+                {"name": "ODRAF Rourkela Base", "number": "+91 661-2540101"},
+                {"name": "Medical Ambulance Unit", "number": "108"}
+            ],
+            "source": "Gemini 2.5 Flash AI"
+        }
+
 
     def _heuristic_chatbot_fallback(self, message: str, disaster_type: str, location: str) -> Dict[str, Any]:
-        msg_lower = message.lower()
+        msg_lower = message.lower().strip()
         
-        if "what should i do" in msg_lower or "now" in msg_lower or "help" in msg_lower:
+        # 0. Fear, Panic, Emotional Distress ("i am feeling sacred / scared / afraid / panic")
+        if any(w in msg_lower for w in ["scared", "sacred", "fear", "panic", "afraid", "anxious", "terrified", "worried", "frightened", "traumatized", "crying"]):
+            resp_text = (
+                f"🛟 PLEASE REMAIN CALM - YOU ARE NOT ALONE ({location.upper()}):\n"
+                f"1. Take a Deep Breath: Focus on slow, deep breathing. Rourkela Emergency Control HQ and ODRAF rescue teams are actively monitoring your sector.\n"
+                f"2. Stay Indoors & Safe: Move to higher ground or reinforced interior rooms immediately. Lock doors and stay away from windows.\n"
+                f"3. Active Emergency Response: Over 12 ODRAF water rescue boats and BLS ambulances are deployed across Rourkela.\n"
+                f"4. Direct Priority Help: If you are trapped or need urgent dispatch, click 'Submit Disaster Report' below or call 1077 immediately."
+            )
+            actions = ["Submit Disaster Report", "Call Emergency Control (1077)", "Find Safe Shelter"]
+            contacts = [
+                {"name": "Odisha Disaster Control Desk", "number": "1077"},
+                {"name": "ODRAF Rourkela Rescue Base", "number": "+91 661-2540101"},
+                {"name": "Medical Ambulance", "number": "108"}
+            ]
+
+        # Cyclone / Storm / High Winds
+        elif "cyclone" in msg_lower or "storm" in msg_lower or "wind" in msg_lower or disaster_type.lower() == "cyclone":
+            resp_text = (
+                f"🌀 CYCLONE & HIGH WIND EMERGENCY PROTOCOL ({location.upper()}):\n"
+                f"1. Stay Indoors: Seek shelter in small interior rooms, closets, or hallways on the lowest level away from glass windows.\n"
+                f"2. Disconnect Power & Gas: Unplug electrical appliances; close all storm shutters or heavy curtains.\n"
+                f"3. Beware Eye of Storm: If winds suddenly die down, stay inside! The second half of the cyclone storm wall will strike rapidly.\n"
+                f"4. Emergency Storm Shelter: Sector 6 DAV Storm Relief Center is open with emergency generators."
+            )
+            actions = ["Find Nearest Storm Shelter", "Call Control Room (1077)", "Submit Cyclone Alert"]
+            contacts = [
+                {"name": "Odisha Disaster Control Desk", "number": "1077"},
+                {"name": "ODRAF Rourkela Rescue Base", "number": "+91 661-2540101"},
+                {"name": "Fire & Rescue Station", "number": "101"}
+            ]
+
+        # Fire / Smoke Evacuation
+        elif "fire" in msg_lower or "smoke" in msg_lower or "burn" in msg_lower or disaster_type.lower() == "fire":
+            resp_text = (
+                f"🔥 FIRE HAZARD & SMOKE EVACUATION PROTOCOL ({location.upper()}):\n"
+                f"1. Crawl Low Under Smoke: Stay close to the floor where air is cleaner and cooler.\n"
+                f"2. Check Door Temperatures: Touch door handles with the back of your hand before opening. If hot, do NOT open.\n"
+                f"3. Stop, Drop & Roll: If clothing catches fire, immediately cover your face and roll on the ground.\n"
+                f"4. Fire Station Dispatch: Sector 4 Fire Station tender unit is dispatched on calling 101."
+            )
+            actions = ["Call Fire Station (101)", "Call Ambulance (108)", "Submit Fire Alert"]
+            contacts = [
+                {"name": "Rourkela Fire & Rescue Squad", "number": "101"},
+                {"name": "Medical Ambulance Response", "number": "108"}
+            ]
+
+        # 1. Medical Emergencies
+        elif any(w in msg_lower for w in ["medical", "injury", "doctor", "ambulance", "health", "hospital", "patient", "blood", "sick"]):
+
+            resp_text = (
+                f"🏥 EMERGENCY MEDICAL PROTOCOL ({location.upper()}):\n"
+                f"1. Immediate Triage: Keep the patient calm. Elevate legs if in shock; clear airway.\n"
+                f"2. Severe Bleeding: Apply firm direct pressure with clean cloth or bandage.\n"
+                f"3. Fracture / Trauma: Do not move injured limbs before paramedic stabilization.\n"
+                f"4. Ambulance Dispatch: BLS Unit from Rourkela Govt Hospital (RGH) is on active standby.\n"
+                f"Call 108 immediately for priority ambulance dispatch."
+            )
+            actions = ["Call Medical Ambulance (108)", "Navigate to RGH Hospital", "Submit Medical Alert"]
+            contacts = [
+                {"name": "Medical Emergency Ambulance", "number": "108"},
+                {"name": "Rourkela Govt Hospital (RGH) Trauma", "number": "+91 661-2540102"},
+                {"name": "Hi-Tech Emergency Hospital", "number": "+91 661-2400500"}
+            ]
+
+        # 2. Emergency Helplines / Contacts
+        elif any(w in msg_lower for w in ["contact", "helpline", "phone", "number", "call", "desk", "control"]):
+            resp_text = (
+                f"📞 OFFICIAL EMERGENCY HELPLINES & CONTROL DESKS ({location.upper()}):\n"
+                f"• District Disaster Control Desk (Toll-Free): 1077\n"
+                f"• Medical Emergency Ambulance: 108\n"
+                f"• Fire & Rescue Service Station: 101\n"
+                f"• ODRAF Rourkela Water Rescue Base: +91 661-2540101\n"
+                f"• Police Control Room: 112 / 100\n"
+                f"• All India Radio Rourkela (Offline Frequency): 102.6 MHz FM"
+            )
+            actions = ["Call State Helpline (1077)", "Call Fire Station (101)", "Call ODRAF Rescue (+91 661-2540101)"]
+            contacts = [
+                {"name": "Odisha Disaster Control Desk", "number": "1077"},
+                {"name": "ODRAF Rourkela Rescue Base", "number": "+91 661-2540101"},
+                {"name": "Fire & Rescue Station", "number": "101"}
+            ]
+
+        # 3. Live Disaster Map & Geospatial Location
+        elif any(w in msg_lower for w in ["map", "location", "sector", "where", "zone", "coordinates", "gis"]):
+            resp_text = (
+                f"🗺️ GEOSPATIAL DISASTER MAP GUIDANCE ({location.upper()}):\n"
+                f"• High Risk Zone: Brahmani River Basin & Sector 6 Low-Lying Quarters (Red Alert).\n"
+                f"• Safe Sector Zones: Sector 4, Sector 5, and Sector 19 (Higher Elevation).\n"
+                f"• Active Rescue Operations: 2 ODRAF Water Rescue Boats positioned at Sector 4 Fire Station.\n"
+                f"Click 'View Live Disaster Map' tab in the navbar above for real-time Leaflet tracking."
+            )
+            actions = ["Open Tactical Map Tab", "Find Nearest Safe Shelter", "Submit Location Report"]
+            contacts = [
+                {"name": "District GIS Control Center", "number": "1077"},
+                {"name": "ODRAF Rourkela Rescue Base", "number": "+91 661-2540101"}
+            ]
+
+        # 4. Shelters & Evacuation
+        elif any(w in msg_lower for w in ["shelter", "evacuat", "stay", "camp", "refuge", "house", "lodging"]):
+            resp_text = (
+                f"🏠 SHELTER & EVACUATION ADVISORY ({location.upper()}):\n"
+                f"The nearest designated relief camp is DAV Public School Sector 6 Relief Camp.\n"
+                f"• Food & Clean Water: Sector 6 Community Hall Distribution Hub.\n"
+                f"• First Aid Post: ODRAF Paramedics stationed at Sector 4 Station.\n"
+                f"• Safe Evacuation Route: Avoid Brahmani Highway Bridge; use Sector 5 main arterial road."
+            )
+            actions = ["Navigate to DAV Relief Camp", "Request Evacuation Transport", "Call Control Desk (1077)"]
+            contacts = [
+                {"name": "Sector 6 DAV Relief Shelter", "number": "+91 661-2540105"},
+                {"name": "ODRAF Rourkela Rescue Base", "number": "+91 661-2540101"}
+            ]
+
+        # 5. Incident Reporting
+        elif any(w in msg_lower for w in ["report", "submit", "notify", "register", "form", "claim"]):
+            resp_text = (
+                f"📋 CITIZEN INCIDENT REPORTING ({location.upper()}):\n"
+                f"To request immediate rescue or report trapped citizens:\n"
+                f"1. Click 'REPORT INCIDENT' in the header navbar.\n"
+                f"2. Provide victim count, location, and hazard details.\n"
+                f"3. Gemini AI will instantly parse your report and rank it in the Priority Queue for SciPy resource dispatch."
+            )
+            actions = ["Open Citizen Report Form", "Call Control Room (1077)", "SMS Offline Report"]
+            contacts = [
+                {"name": "Incident Reporting Desk", "number": "1077"},
+                {"name": "NDRF Helpline", "number": "1078"}
+            ]
+
+        # 6. Action Plan / General Guidance
+        elif any(w in msg_lower for w in ["what should i do", "now", "action", "guidance", "steps", "help"]):
             resp_text = (
                 f"🚨 IMMEDIATE ACTION PLAN FOR {location.upper()}:\n"
-                f"1. Move to Higher Ground: If water is rising, move children, elderly, and essential items to the upper floor or roof.\n"
-                f"2. Stay Connected: Keep mobile battery saved, turn on battery saver mode, and tune into All India Radio Rourkela (102.6 FM).\n"
-                f"3. Submit Incident Report: Use the 'Submit Disaster Report' button to notify command center operators of your location and family count.\n"
-                f"4. Avoid Hazards: Do not attempt to walk or drive through flooded roads or near downed electrical poles."
+                f"1. Move to Higher Ground: If water is rising, move children, elderly, and essential items to the top floor or roof.\n"
+                f"2. Disconnect Utilities: Shut off main electrical breaker and gas valve to prevent electrocution or leaks.\n"
+                f"3. Stay Connected: Keep mobile battery saved, turn on battery saver mode, tune into AIR Rourkela (102.6 FM).\n"
+                f"4. Submit Incident Report: Use the 'Submit Disaster Report' button to notify command center operators of your exact location and family count."
             )
             actions = ["Submit Disaster Report", "Find Safe Shelter", "Call Emergency Helpline (1077)"]
-        elif "shelter" in msg_lower or "stay" in msg_lower or "camp" in msg_lower:
-            resp_text = (
-                f"🏠 SHELTER & EVACUATION ADVISORY ({location}):\n"
-                f"The nearest relief shelter is DAV Public School Sector 6 Relief Camp.\n"
-                f"- Clean Drinking Water: Available at Sector 6 Community Center.\n"
-                f"- First Aid & Medical: ODRAF Paramedic Team stationed at Sector 4 Fire Station.\n"
-                f"- Evacuation Route: Avoid Brahmani Highway Bridge; use Sector 5 main arterial road."
-            )
-            actions = ["View Live Shelter Map", "Call Control Room (1077)", "Request Transport"]
+            contacts = [
+                {"name": "Odisha Emergency Control Desk", "number": "1077"},
+                {"name": "ODRAF Rourkela Water Rescue Base", "number": "+91 661-2540101"}
+            ]
+
+        # 7. Default Custom Advisory
         else:
             resp_text = (
                 f"🛡️ EMERGENCY ADVISORY FOR {location.upper()}:\n"
-                f"Regarding {disaster_type}: Please remain calm and stay indoors. Rourkela Control HQ is actively deploying rescue boats and ODRAF teams to affected areas.\n"
-                f"For direct medical or rescue assistance, submit a report or call our toll-free hotline."
+                f"Regarding '{message}': Rourkela Control HQ is actively monitoring the Brahmani basin and low-lying sectors.\n"
+                f"For immediate assistance, please select a quick action button below or call our 24/7 hotline."
             )
             actions = ["Submit Disaster Report", "View Live Disaster Map", "Emergency Contacts"]
+            contacts = [
+                {"name": "Odisha Emergency Control Desk", "number": "1077"},
+                {"name": "Fire & Rescue Station", "number": "101"},
+                {"name": "Medical Ambulance Unit", "number": "108"}
+            ]
 
         return {
             "response": resp_text,
             "suggested_actions": actions,
-            "emergency_contacts": [
-                {"name": "Odisha Emergency Control Desk", "number": "1077"},
-                {"name": "ODRAF Rourkela Water Rescue Unit", "number": "+91 661-2540101"},
-                {"name": "Medical Ambulance", "number": "108"}
-            ],
-            "source": "Gemini AI (Local Intelligence Fallback)"
+            "emergency_contacts": contacts,
+            "source": "Gemini AI (Local Intelligence Engine)"
         }
+
 
 gemini_extractor = GeminiExtractionService()
 

@@ -146,9 +146,24 @@ export default function CitizenForm({ onIncidentSubmitted, onNavigate }) {
 
       const result = await incidentService.submitReport(payload);
       setSubmissionResult(result);
+
+      // Auto-save disaster context for Chatbot
+      const disasterMap = {
+        'FLOOD_WATER_RESCUE': 'Flood',
+        'CYCLONE_WIND_DAMAGE': 'Cyclone',
+        'FIRE_HAZARD': 'Fire',
+        'BUILDING_COLLAPSE': 'Building Collapse',
+        'MEDICAL_EMERGENCY': 'Medical',
+        'LANDSLIDE_ROAD_BLOCK': 'Building Collapse'
+      };
+      if (incidentType && disasterMap[incidentType]) {
+        localStorage.setItem('drishti_last_reported_disaster', disasterMap[incidentType]);
+      }
+
       if (onIncidentSubmitted) {
         onIncidentSubmitted(result);
       }
+
     } catch (err) {
       console.error('Submission error:', err);
       setErrorMsg(err.response?.data?.detail || 'Failed to submit report. Ensure FastAPI backend is running at http://localhost:8000');

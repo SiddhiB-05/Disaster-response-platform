@@ -3,13 +3,25 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Bot, Send, User, Shield, Sparkles, Phone, AlertCircle } from 'lucide-react';
 import { extraService } from '../services/api';
 
+const QUICK_ACTIONS_BY_DISASTER = {
+  Flood: ["Flood Evacuation Steps", "Submerged Bridge Safety", "Nearest Safe Shelter"],
+  Cyclone: ["Cyclone Wind & Storm Safety", "Power Outage Protocol", "Nearest Storm Shelter"],
+  Medical: ["Medical Emergency Protocol", "Trauma & CPR First Aid", "Ambulance Response (108)"],
+  Fire: ["Fire Evacuation & Smoke Safety", "Burn First Aid Protocol", "Call Fire Station (101)"],
+  "Building Collapse": ["Trapped in Collapse Safety", "Debris Rescue Protocol", "Call Rescue Helpline (1077)"]
+};
+
 export default function DisasterChatbot() {
+  const [disasterType, setDisasterType] = useState(() => {
+    return localStorage.getItem('drishti_last_reported_disaster') || 'Flood';
+  });
+
   const [messages, setMessages] = useState([
     {
       id: 'msg-init-1',
       sender: 'bot',
-      text: "👋 Hello! I am your AI Emergency Disaster Assistant for Rourkela.\nHow can I guide you? You can ask about flood safety, evacuation steps, medical emergencies, or nearest shelters.",
-      actions: ["Flood Evacuation Steps", "Medical Emergency Protocol", "Nearest Safe Shelter"],
+      text: "👋 Hello! I am your AI Emergency Disaster Assistant for Rourkela.\nHow can I guide you? Ask any question or choose an emergency action below.",
+      actions: QUICK_ACTIONS_BY_DISASTER[localStorage.getItem('drishti_last_reported_disaster') || 'Flood'],
       contacts: [
         { name: "Emergency Control Desk", number: "1077" },
         { name: "Medical Ambulance", number: "108" }
@@ -17,7 +29,6 @@ export default function DisasterChatbot() {
     }
   ]);
   const [inputMsg, setInputMsg] = useState('');
-  const [disasterType, setDisasterType] = useState('Flood');
   const [loading, setLoading] = useState(false);
   const [liveAnnouncement, setLiveAnnouncement] = useState('');
   const chatBottomRef = useRef(null);
@@ -31,6 +42,25 @@ export default function DisasterChatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, loading]);
+
+  const handleDisasterTypeChange = (newType) => {
+    setDisasterType(newType);
+    const newActions = QUICK_ACTIONS_BY_DISASTER[newType] || ["Emergency Action Plan", "Nearest Safe Shelter", "Emergency Helplines"];
+    // Open a fresh clean chat thread for the new disaster type
+    setMessages([
+      {
+        id: `msg-${Date.now()}-init`,
+        sender: 'bot',
+        text: `👋 Hello! I am your AI Emergency Disaster Assistant for Rourkela.\nCurrently loaded hazard protocol: ${newType.toUpperCase()}.\nHow can I guide you with ${newType} safety in Sector 6?`,
+        actions: newActions,
+        contacts: [
+          { name: "Emergency Control Desk", number: "1077" },
+          { name: "Medical Ambulance", number: "108" }
+        ]
+      }
+    ]);
+  };
+
 
   const handleSend = async (msgToSend) => {
     const text = msgToSend || inputMsg;
@@ -109,17 +139,28 @@ export default function DisasterChatbot() {
           </div>
         </div>
 
-        <select
-          value={disasterType}
-          onChange={(e) => setDisasterType(e.target.value)}
-          className="px-3 py-1.5 bg-black text-white border border-white/40 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-tactile-accent"
-        >
-          <option value="Flood">Disaster: Flood</option>
-          <option value="Cyclone">Disaster: Cyclone</option>
-          <option value="Medical">Disaster: Medical</option>
-          <option value="Fire">Disaster: Fire</option>
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={disasterType}
+            onChange={(e) => handleDisasterTypeChange(e.target.value)}
+            className="px-3 py-1.5 bg-black text-white border border-white/40 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-tactile-accent cursor-pointer"
+          >
+            <option value="Flood">Disaster: Flood</option>
+            <option value="Cyclone">Disaster: Cyclone</option>
+            <option value="Medical">Disaster: Medical</option>
+            <option value="Fire">Disaster: Fire</option>
+            <option value="Building Collapse">Disaster: Building Collapse</option>
+          </select>
+          <button
+            onClick={() => handleDisasterTypeChange(disasterType)}
+            className="px-3 py-1.5 bg-white text-black hover:bg-tactile-accent border border-black text-xs font-bold uppercase transition-colors shadow-tactile-sm"
+          >
+            NEW CHAT
+          </button>
+        </div>
+
       </motion.div>
+
 
       {/* Chat Messages Container */}
       <div className="bg-white border-2 border-black shadow-[6px_6px_0px_#1E2C1D] p-4 h-[440px] overflow-y-auto space-y-4">
