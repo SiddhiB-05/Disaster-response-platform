@@ -1,0 +1,33 @@
+name: 🔄 Auto-Sync Upstream & Deploy
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Check every 15 minutes automatically
+  workflow_dispatch: # Allows 1-click manual trigger from GitHub Actions tab
+
+jobs:
+  sync:
+    name: 🔄 Sync from Siddhi Upstream Repo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync and Merge from Upstream
+        run: |
+          git remote add upstream https://github.com/SiddhiB-05/Disaster-response-platform.git || true
+          git fetch upstream main
+          if git merge upstream/main -m "chore(sync): auto-sync latest changes from upstream"; then
+            git push origin main
+            echo "✅ Successfully synced and pushed new upstream commits to trigger automated deployment!"
+          else
+            echo "ℹ️ Already in sync with upstream."
+          fi
