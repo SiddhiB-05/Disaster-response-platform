@@ -9,7 +9,9 @@ class Settings:
     
     # Gemini API Key & Model
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    GEMINI_EMBEDDING_MODEL: str = os.getenv("GEMINI_EMBEDDING_MODEL", "text-embedding-001")
+
     
     # Database URL - SQLite default, easily swappable for PostgreSQL/PostGIS
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./disaster_response.db")

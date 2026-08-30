@@ -65,59 +65,25 @@ def get_weather_telemetry():
 @router.post("/chatbot/message", response_model=ChatbotResponse)
 def get_chatbot_guidance(req: ChatbotRequest):
     """
-    AI Emergency Chatbot Assistant: Provides immediate step-by-step guidance based on user situation.
+    AI Emergency Chatbot Assistant: Dynamically generates step-by-step disaster guidance using Gemini 1.5/2.5 Flash API with model fallbacks.
     """
-    user_msg = req.message.lower()
+    result = gemini_extractor.generate_chatbot_response(
+        message=req.message,
+        disaster_type=req.disaster_type or "Flood",
+        location=req.location or "Sector 6, Rourkela"
+    )
     
-    # 1. Flood Guidance
-    if "flood" in user_msg or "water" in user_msg or "trapped" in user_msg:
-        return ChatbotResponse(
-            response="🚨 IMMEDIATE FLOOD SAFETY PROTOCOL:\n1. Move to Higher Ground: Immediately move children, elderly, and essential items to the top floor or roof.\n2. Disconnect Power: Turn off main electrical switches to prevent electrocution.\n3. Do NOT Walk/Drive in Flood Water: Just 15 cm of moving water can knock a person over.\n4. Signal for Rescue: Wave a bright cloth or flash a phone torch toward rescue boats/drones.",
-            suggested_actions=[
-                "Submit Incident Report via Platform",
-                "Call State Emergency Control (1077)",
-                "Evacuate to Sector 6 DAV Relief Shelter"
-            ],
-            emergency_contacts=[
-                {"name": "Odisha State Emergency Control", "number": "1077"},
-                {"name": "NDRF National Rescue Helpline", "number": "1078"},
-                {"name": "ODRAF Rourkela Water Rescue Unit", "number": "+91 661-2540101"}
-            ],
-            source="Gemini AI Disaster Knowledge Base"
-        )
-    
-    # 2. Medical / Injury Guidance
-    elif "medical" in user_msg or "injury" in user_msg or "heart" in user_msg or "sick" in user_msg or "doctor" in user_msg:
-        return ChatbotResponse(
-            response="🏥 EMERGENCY MEDICAL PROTOCOL:\n1. Keep Patient Calm: Elevate legs if in shock; clear airway.\n2. Apply Direct Pressure: For bleeding wounds, press clean cloth firmly.\n3. Do Not Move Fractures: Immobilize limbs before rescue arrives.\n4. Dispatch Alert Sent: Nearest ambulance from Rourkela Govt Hospital is being dispatched.",
-            suggested_actions=[
-                "Call Ambulance (108)",
-                "Navigate to Rourkela Govt Hospital (RGH)",
-                "Submit Medical Emergency Alert"
-            ],
-            emergency_contacts=[
-                {"name": "Medical Emergency Ambulance", "number": "108"},
-                {"name": "Rourkela Govt Hospital (RGH) Trauma", "number": "+91 661-2540102"},
-                {"name": "Hi-Tech Emergency Hospital", "number": "+91 661-2400500"}
-            ],
-            source="Gemini AI Medical Guidance"
-        )
-    
-    # 3. Default AI Response
     return ChatbotResponse(
-        response=f"🛡️ DISASTER ADVISORY for {req.location}:\nFor your safety regarding {req.disaster_type}, please remain calm. Emergency authorities and ODRAF rescue teams are actively monitoring Rourkela Sector 6 and Brahmani basin. Avoid crossing flooded bridges or damaged structures.",
-        suggested_actions=[
-            "Find Nearest Safe Shelter",
-            "View Live Disaster Map",
-            "Submit Disaster Report"
-        ],
-        emergency_contacts=[
+        response=result.get("response", "Stay safe and follow emergency instructions."),
+        suggested_actions=result.get("suggested_actions", ["Submit Incident Report", "Call Helpline (1077)"]),
+        emergency_contacts=result.get("emergency_contacts", [
             {"name": "Rourkela Emergency Control Desk", "number": "1077"},
             {"name": "Fire & Rescue Station", "number": "101"},
             {"name": "Ambulance Response Unit", "number": "108"}
-        ],
-        source="Gemini AI Assistant"
+        ]),
+        source=result.get("source", "Gemini AI Assistant")
     )
+
 
 
 @router.get("/emergency/contacts")
