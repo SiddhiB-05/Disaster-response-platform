@@ -16,10 +16,20 @@ import AIPipelineInspector from './components/AIPipelineInspector';
 import PageTransition from './components/motion/PageTransition';
 import Tactical3DBackground from './components/background/Tactical3DBackground';
 import RelocationPlanner from './components/RelocationPlanner';
-import { incidentService, resourceService, facilityService, alertService, demoService, relocationService, setupWebSocket } from './services/api';
+import LoginPage from './components/LoginPage';
+import { incidentService, resourceService, facilityService, alertService, demoService, relocationService, authService, setupWebSocket } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('landing');
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sih_officer_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+  const [token, setToken] = useState(() => localStorage.getItem('sih_officer_token') || '');
   const [incidents, setIncidents] = useState([]);
   const [resources, setResources] = useState([]);
   const [facilities, setFacilities] = useState([]);
@@ -29,6 +39,22 @@ export default function App() {
   const [habitations, setHabitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
+
+  const handleLoginSuccess = (user, authToken) => {
+    setCurrentUser(user);
+    if (authToken) {
+      setToken(authToken);
+      localStorage.setItem('sih_officer_token', authToken);
+    }
+    localStorage.setItem('sih_officer_user', JSON.stringify(user));
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setToken('');
+    localStorage.removeItem('sih_officer_user');
+    localStorage.removeItem('sih_officer_token');
+  };
 
   const fetchData = async () => {
     try {
@@ -118,11 +144,23 @@ export default function App() {
                 onResetDemo={handleResetDemo}
                 isResetting={isResetting}
                 activeAlert={activeAlert}
+                currentUser={currentUser}
               />
 
               <main className="flex-1 pb-12">
                 <AnimatePresence mode="wait">
                   <PageTransition key={`tab-${activeTab}`} className="w-full">
+                    {activeTab === 'login' && (
+                      <LoginPage
+                        currentUser={currentUser}
+                        onLoginSuccess={(user, token) => {
+                          handleLoginSuccess(user, token);
+                        }}
+                        onLogout={handleLogout}
+                        onNavigate={(tab) => setActiveTab(tab)}
+                      />
+                    )}
+
                     {activeTab === 'relocation' && (
                       <RelocationPlanner />
                     )}

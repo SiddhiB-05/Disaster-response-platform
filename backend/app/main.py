@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 from app.database.database import engine, Base, SessionLocal
-from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo, extra_features, relocation
+from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo, extra_features, relocation, auth
 from app.core.websocket import ws_manager
 
 # Create Database tables
@@ -17,8 +17,10 @@ async def lifespan(app: FastAPI):
     db = SessionLocal()
     try:
         from app.routes.demo import seed_demo_data
+        from app.routes.auth import ensure_default_officers
         seed_demo_data(db)
-        print("[Startup] PS-05 Disaster Platform Backend initialized and synthetic Rourkela demo data seeded.")
+        ensure_default_officers(db)
+        print("[Startup] PS-05 Disaster Platform Backend initialized, Officers & synthetic Rourkela demo data seeded.")
     except Exception as e:
         print(f"[Startup] Table schema update needed ({e}). Re-indexing tables...")
         db.close()
@@ -27,7 +29,9 @@ async def lifespan(app: FastAPI):
             Base.metadata.create_all(bind=engine)
             db = SessionLocal()
             from app.routes.demo import seed_demo_data
+            from app.routes.auth import ensure_default_officers
             seed_demo_data(db)
+            ensure_default_officers(db)
             print("[Startup] Database tables re-created with updated schema and demo data seeded!")
         except Exception as err2:
             print(f"[Startup] Warning on table refresh: {err2}")
@@ -56,6 +60,7 @@ app.add_middleware(
 )
 
 # Versioned API v1 Routers
+app.include_router(auth.router)
 app.include_router(incidents.router)
 app.include_router(resources.router)
 app.include_router(alerts.router)
@@ -67,6 +72,7 @@ app.include_router(extra_features.router)
 app.include_router(relocation.router)
 
 # Backwards Compatible Route Aliases for legacy /api pathing
+app.include_router(auth.router, prefix="/api", tags=["Auth Legacy"])
 app.include_router(incidents.router, prefix="/api", tags=["Incidents Legacy"])
 app.include_router(resources.router, prefix="/api", tags=["Resources Legacy"])
 app.include_router(alerts.router, prefix="/api", tags=["Alerts Legacy"])
@@ -75,6 +81,7 @@ app.include_router(assignments.router, prefix="/api", tags=["Assignments Legacy"
 app.include_router(demo.router, prefix="/api", tags=["Demo Legacy"])
 app.include_router(extra_features.router, prefix="/api", tags=["Extra Features Legacy"])
 app.include_router(relocation.router, prefix="/api", tags=["Relocation Legacy"])
+
 
 
 

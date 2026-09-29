@@ -273,3 +273,20 @@ class VulnerableHabitation(Base):
     red_zone = relationship("RedZone", back_populates="habitations")
     assigned_site = relationship("RelocationSite", back_populates="habitations")
 
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    public_ref = Column(String, unique=True, index=True, default=lambda: generate_public_ref("OFF"))
+    officer_id = Column(String, unique=True, index=True, nullable=False) # e.g. OFF-191-SDMA
+    email = Column(String, unique=True, index=True, nullable=False)
+    full_name = Column(String, nullable=False)
+    password_hash = Column(String, nullable=False)
+    department = Column(String, default="State Disaster Management Authority (SDMA)")
+    role = Column(String, default="Government Officer")
+    badge_number = Column(String, nullable=True)
+    district = Column(String, default="Rourkela Zone")
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

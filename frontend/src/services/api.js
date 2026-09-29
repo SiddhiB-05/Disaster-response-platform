@@ -9,6 +9,23 @@ const api = axios.create({
   },
 });
 
+export const authService = {
+  login: async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    return response.data;
+  },
+  signup: async (userData) => {
+    const response = await api.post('/auth/signup', userData);
+    return response.data;
+  },
+  getMe: async (token) => {
+    const response = await api.get('/auth/me', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+    return response.data;
+  }
+};
+
 export const incidentService = {
   submitReport: async (data) => {
     const response = await api.post('/incidents', data);

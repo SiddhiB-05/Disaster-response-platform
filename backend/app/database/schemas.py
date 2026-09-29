@@ -337,3 +337,39 @@ class SDMAPolicyReportRequest(BaseModel):
     district: Optional[str] = "All Districts"
     target_state: Optional[str] = "Odisha & Vulnerable States"
 
+
+# Auth / User Schemas
+class UserSignup(BaseModel):
+    full_name: str = Field(..., example="Commander Rajesh Sharma")
+    officer_id: str = Field(..., example="OFF-191-SDMA")
+    email: str = Field(..., example="officer.sih@sdma.gov.in")
+    password: str = Field(..., example="disaster123")
+    department: Optional[str] = Field("State Disaster Management Authority (SDMA)", example="State Disaster Management Authority (SDMA)")
+    role: Optional[str] = Field("Government Officer", example="Government Officer")
+    district: Optional[str] = Field("Rourkela Zone", example="Rourkela Zone")
+    badge_number: Optional[str] = Field(None, example="SDMA-7892")
+
+class UserLogin(BaseModel):
+    officer_id_or_email: str = Field(..., example="OFF-191-SDMA")
+    password: str = Field(..., example="disaster123")
+
+class UserResponse(BaseModel):
+    id: int
+    public_ref: str
+    officer_id: str
+    email: str
+    full_name: str
+    department: str
+    role: str
+    district: str
+    badge_number: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class TokenResponse(BaseModel):
+    token: str
+    token_type: str = "bearer"
+    user: UserResponse
+

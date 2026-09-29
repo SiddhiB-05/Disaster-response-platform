@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio, UserCheck, Shield } from 'lucide-react';
 import drishtiLogo from '../assets/drishti-logo.jpg';
 
-export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false }) {
+export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false, currentUser }) {
   const tabs = [
     { id: 'landing', label: 'HOME', icon: Activity },
+    { id: 'login', label: currentUser ? 'OFFICER PROFILE' : 'OFFICER LOGIN / SIGNUP', icon: UserCheck },
     { id: 'relocation', label: 'SDMA RELOCATION', icon: ShieldAlert },
     { id: 'architecture', label: 'ARCHITECTURE', icon: GitBranch },
     { id: 'report', label: 'REPORT', icon: ShieldAlert },
@@ -39,6 +40,24 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
         </div>
 
         <div className="flex items-center gap-3">
+          {currentUser ? (
+            <button
+              onClick={() => setActiveTab('login')}
+              className="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#6DBE5A]/20 border border-[#6DBE5A] text-[#6DBE5A] hover:bg-[#6DBE5A] hover:text-black font-mono text-[11px] font-bold rounded transition-colors"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              <span>OFFICER: {currentUser.officer_id} ({currentUser.full_name})</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setActiveTab('login')}
+              className="flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-500/20 border border-amber-400 text-amber-300 hover:bg-amber-400 hover:text-black font-mono text-[11px] font-bold rounded transition-colors"
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              <span>OFFICER LOGIN</span>
+            </button>
+          )}
+
           <motion.button 
             onClick={onResetDemo}
             disabled={isResetting}
