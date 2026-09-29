@@ -232,7 +232,7 @@ export default function App() {
 
               <footer className="border-t-2 border-black bg-tactile-oliveDark text-white py-3 px-6 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-bold text-tactile-accent">PS-05 REAL-TIME DISASTER EARLY-WARNING PLATFORM</span>
+                  <span className="font-bold text-tactile-accent">DISASTERRESPONSE // REAL-TIME DISASTER EARLY-WARNING PLATFORM</span>
                   <span className="ml-2 text-gray-400">| Gemini AI NLP • SciPy Allocation Engine</span>
                 </div>
                 <div className="text-gray-400">
