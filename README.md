@@ -10,8 +10,6 @@
 
 **DRISHTi** is an intelligent, end-to-end disaster-response decision-support platform that now operates in two fully integrated modes:
 
-1. **PS-05 — Real-Time Emergency Response**: Converts unstructured citizen incident reports into structured AI intelligence, calculates 0–100 priority scores, executes SciPy Hungarian bipartite resource matching, and streams real-time updates via WebSockets to emergency responders in Rourkela, Odisha.
-
 2. **PS-26191 — Proactive Multi-Hazard Relocation & SDMA Decision Support** *(newly integrated)*: An AI-driven GIS platform for State Disaster Management Authorities (SDMA) that dynamically maps and updates multi-hazard Red Zones, assesses the carrying capacity of safer relocation sites, and prioritizes vulnerable habitations for proactive — not reactive — relocation planning.
 
 ---
