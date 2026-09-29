@@ -54,12 +54,25 @@ class GeminiExtractionService:
                     print(f"[Gemini Service] Could not initialize google.generativeai Client: {e2}")
                     self.client = None
 
+    def _get_candidate_models(self) -> List[str]:
+        models = [
+            "gemini-flash-lite-latest",
+            "models/gemini-flash-lite-latest",
+            "gemini-flash-latest",
+            "models/gemini-flash-latest",
+            "gemini-3.8-flash",
+            "models/gemini-3.8-flash"
+        ]
+        if self.model_name and self.model_name not in models:
+            models.insert(0, self.model_name)
+        return models
+
     def get_text_embedding(self, text: str) -> List[float]:
         """
-        Generate vector embedding using Gemini 'text-embedding-001' / 'models/gemini-embedding-001' model.
+        Generate vector embedding using Gemini 'models/gemini-embedding-001' model.
         """
         if self.client and text:
-            candidate_models = ["models/gemini-embedding-001", "models/gemini-embedding-2", "text-embedding-001", self.embedding_model]
+            candidate_models = ["models/gemini-embedding-001", "models/gemini-embedding-2", self.embedding_model]
             
             if hasattr(self.client, "models") and hasattr(self.client.models, "embed_content"):
                 for m in candidate_models:
@@ -141,14 +154,16 @@ Return ONLY a strict JSON object with NO markdown tags or markdown codeblocks us
 }}
 """
         raw_text = ""
-        candidate_models = ["models/gemini-3.6-flash", "models/gemini-3.7-flash", "models/gemini-3.5-flash", "models/gemini-2.5-flash", "models/gemini-flash-latest"]
+        candidate_models = self._get_candidate_models()
+        generation_config = {"temperature": 0.1, "max_output_tokens": 450}
 
         if hasattr(self.client, "models"):
             for m in candidate_models:
                 try:
                     response = self.client.models.generate_content(
                         model=m,
-                        contents=prompt
+                        contents=prompt,
+                        config=generation_config
                     )
                     raw_text = response.text
                     if raw_text:
@@ -158,7 +173,7 @@ Return ONLY a strict JSON object with NO markdown tags or markdown codeblocks us
         elif hasattr(self.client, "GenerativeModel"):
             for m in candidate_models:
                 try:
-                    model = self.client.GenerativeModel(m)
+                    model = self.client.GenerativeModel(m, generation_config=generation_config)
                     response = model.generate_content(prompt)
                     raw_text = response.text
                     if raw_text:
@@ -347,18 +362,20 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
     {{"name": "ODRAF Rourkela Base", "number": "+91 661-2540101"}},
     {{"name": "Medical Ambulance", "number": "108"}}
   ],
-  "source": "Gemini AI (gemini-2.5-flash)"
+  "source": "Gemini AI (Flash Fast Engine)"
 }}
 """
         raw_text = ""
-        candidate_models = ["models/gemini-3.6-flash", "models/gemini-3.7-flash", "models/gemini-3.5-flash", "models/gemini-2.5-flash", "models/gemini-flash-latest"]
+        candidate_models = self._get_candidate_models()
+        generation_config = {"temperature": 0.2, "max_output_tokens": 400}
 
         if hasattr(self.client, "models"):
             for m in candidate_models:
                 try:
                     response = self.client.models.generate_content(
                         model=m,
-                        contents=prompt
+                        contents=prompt,
+                        config=generation_config
                     )
                     raw_text = response.text
                     if raw_text:
@@ -368,7 +385,7 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
         elif hasattr(self.client, "GenerativeModel"):
             for m in candidate_models:
                 try:
-                    model = self.client.GenerativeModel(m)
+                    model = self.client.GenerativeModel(m, generation_config=generation_config)
                     response = model.generate_content(prompt)
                     raw_text = response.text
                     if raw_text:
@@ -385,7 +402,7 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
             json_match = re.search(r'\{.*\}', clean_text, re.DOTALL)
             if json_match:
                 parsed = json.loads(json_match.group(0))
-                parsed["source"] = "Gemini 2.5 Flash AI"
+                parsed["source"] = "Gemini Flash AI"
                 return parsed
         except Exception as json_err:
             print(f"[Gemini Chatbot] JSON parse note ({json_err}). Formatter active.")
@@ -400,7 +417,7 @@ Return ONLY a strict JSON object with NO markdown codeblocks matching this exact
                 {"name": "ODRAF Rourkela Base", "number": "+91 661-2540101"},
                 {"name": "Medical Ambulance Unit", "number": "108"}
             ],
-            "source": "Gemini 2.5 Flash AI"
+            "source": "Gemini Flash AI"
         }
 
 
@@ -607,17 +624,31 @@ Output ONLY a JSON object:
   "carrying_capacity_strategy": "Strategy for safer relocation sites...",
   "rehabilitation_budget_est_crores": 45.5,
   "key_policy_recommendations": ["Rec 1", "Rec 2", "Rec 3"],
-  "source": "Gemini 3.6 Proactive SDMA Engine"
+  "source": "Gemini Flash AI SDMA Engine"
 }}
 """
         if self.client:
             try:
-                candidate_models = ["models/gemini-3.6-flash", "models/gemini-3.7-flash", "models/gemini-3.5-flash", "models/gemini-2.5-flash"]
+                candidate_models = self._get_candidate_models()
                 raw_text = ""
                 if hasattr(self.client, "models"):
                     for m in candidate_models:
                         try:
-                            res = self.client.models.generate_content(model=m, contents=prompt)
+                            res = self.client.models.generate_content(
+                                model=m,
+                                contents=prompt,
+                                config={"temperature": 0.2, "max_output_tokens": 700}
+                            )
+                            raw_text = res.text
+                            if raw_text:
+                                break
+                        except Exception:
+                            pass
+                elif hasattr(self.client, "GenerativeModel"):
+                    for m in candidate_models:
+                        try:
+                            model = self.client.GenerativeModel(m, generation_config={"temperature": 0.2, "max_output_tokens": 700})
+                            res = model.generate_content(prompt)
                             raw_text = res.text
                             if raw_text:
                                 break
