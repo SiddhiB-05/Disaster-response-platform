@@ -15,7 +15,8 @@ import OfflineEmergencyInfo from './components/OfflineEmergencyInfo';
 import AIPipelineInspector from './components/AIPipelineInspector';
 import PageTransition from './components/motion/PageTransition';
 import Tactical3DBackground from './components/background/Tactical3DBackground';
-import { incidentService, resourceService, facilityService, alertService, demoService, setupWebSocket } from './services/api';
+import RelocationPlanner from './components/RelocationPlanner';
+import { incidentService, resourceService, facilityService, alertService, demoService, relocationService, setupWebSocket } from './services/api';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('landing');
@@ -23,21 +24,30 @@ export default function App() {
   const [resources, setResources] = useState([]);
   const [facilities, setFacilities] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [redZones, setRedZones] = useState([]);
+  const [relocationSites, setRelocationSites] = useState([]);
+  const [habitations, setHabitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
 
   const fetchData = async () => {
     try {
-      const [incRes, resRes, facRes, altRes] = await Promise.all([
+      const [incRes, resRes, facRes, altRes, rzRes, siteRes, habRes] = await Promise.all([
         incidentService.getIncidents(),
         resourceService.getResources(),
         facilityService.getFacilities(),
-        alertService.getAlerts()
+        alertService.getAlerts(),
+        relocationService.getRedZones().catch(() => []),
+        relocationService.getSites().catch(() => []),
+        relocationService.getHabitations().catch(() => [])
       ]);
       setIncidents(incRes || []);
       setResources(resRes || []);
       setFacilities(facRes || []);
       setAlerts(altRes || []);
+      setRedZones(rzRes || []);
+      setRelocationSites(siteRes || []);
+      setHabitations(habRes || []);
     } catch (err) {
       console.error("Data fetching error:", err);
     } finally {
@@ -113,6 +123,10 @@ export default function App() {
               <main className="flex-1 pb-12">
                 <AnimatePresence mode="wait">
                   <PageTransition key={`tab-${activeTab}`} className="w-full">
+                    {activeTab === 'relocation' && (
+                      <RelocationPlanner />
+                    )}
+
                     {activeTab === 'architecture' && (
                       <SystemArchitecture onNavigate={(tab) => setActiveTab(tab)} />
                     )}
@@ -145,8 +159,12 @@ export default function App() {
                         incidents={incidents}
                         resources={resources}
                         facilities={facilities}
+                        redZones={redZones}
+                        relocationSites={relocationSites}
+                        habitations={habitations}
                       />
                     )}
+
 
                     {activeTab === 'shelters' && (
                       <ShelterMedicalDirectory />

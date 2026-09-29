@@ -6,6 +6,7 @@ import drishtiLogo from '../assets/drishti-logo.jpg';
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false }) {
   const tabs = [
     { id: 'landing', label: 'HOME', icon: Activity },
+    { id: 'relocation', label: 'SDMA RELOCATION', icon: ShieldAlert },
     { id: 'architecture', label: 'ARCHITECTURE', icon: GitBranch },
     { id: 'report', label: 'REPORT', icon: ShieldAlert },
     { id: 'queue', label: 'PRIORITY QUEUE', icon: Activity },
@@ -17,6 +18,7 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
     { id: 'offline', label: 'OFFLINE SMS', icon: PhoneCall },
     { id: 'pipeline', label: 'AI PIPELINE', icon: Layers },
   ];
+
 
   return (
     <header className="border-b-4 border-black bg-[#162415] text-white w-full">

@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 from app.database.database import engine, Base, SessionLocal
-from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo, extra_features
+from app.routes import incidents, resources, alerts, facilities, assignments, audit, demo, extra_features, relocation
 from app.core.websocket import ws_manager
 
 # Create Database tables
@@ -64,6 +64,7 @@ app.include_router(assignments.router)
 app.include_router(audit.router)
 app.include_router(demo.router)
 app.include_router(extra_features.router)
+app.include_router(relocation.router)
 
 # Backwards Compatible Route Aliases for legacy /api pathing
 app.include_router(incidents.router, prefix="/api", tags=["Incidents Legacy"])
@@ -73,6 +74,8 @@ app.include_router(facilities.router, prefix="/api", tags=["Facilities Legacy"])
 app.include_router(assignments.router, prefix="/api", tags=["Assignments Legacy"])
 app.include_router(demo.router, prefix="/api", tags=["Demo Legacy"])
 app.include_router(extra_features.router, prefix="/api", tags=["Extra Features Legacy"])
+app.include_router(relocation.router, prefix="/api", tags=["Relocation Legacy"])
+
 
 
 @app.websocket("/api/v1/ws")

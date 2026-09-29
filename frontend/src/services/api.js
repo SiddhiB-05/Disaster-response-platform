@@ -126,6 +126,50 @@ export const extraService = {
   }
 };
 
+export const relocationService = {
+  getRedZones: async (filters = {}) => {
+    const response = await api.get('/relocation/red-zones', { params: filters });
+    return response.data;
+  },
+  createRedZone: async (data) => {
+    const response = await api.post('/relocation/red-zones', data);
+    return response.data;
+  },
+  updateRedZoneIntensity: async (id, hazard_intensity) => {
+    const response = await api.put(`/relocation/red-zones/${id}/intensity`, null, { params: { hazard_intensity } });
+    return response.data;
+  },
+  getSites: async (filters = {}) => {
+    const response = await api.get('/relocation/sites', { params: filters });
+    return response.data;
+  },
+  createSite: async (data) => {
+    const response = await api.post('/relocation/sites', data);
+    return response.data;
+  },
+  getHabitations: async (tier = null) => {
+    const response = await api.get('/relocation/habitations', { params: { tier } });
+    return response.data;
+  },
+  createHabitation: async (data) => {
+    const response = await api.post('/relocation/habitations', data);
+    return response.data;
+  },
+  prioritizeAll: async () => {
+    const response = await api.post('/relocation/prioritize-all');
+    return response.data;
+  },
+  allocateCarryingCapacity: async () => {
+    const response = await api.post('/relocation/allocate-carrying-capacity');
+    return response.data;
+  },
+  generateSDMAReport: async (data = {}) => {
+    const response = await api.post('/relocation/sdma-policy-report', data);
+    return response.data;
+  }
+};
+
+
 
 export function setupWebSocket(onEvent) {
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';

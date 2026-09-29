@@ -215,3 +215,125 @@ class AuditEventResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Red Zone Schemas
+class RedZoneCreate(BaseModel):
+    name: str = Field(..., example="Wayanad Landslide Hazard Belt Zone A")
+    district: str = Field(..., example="Wayanad")
+    state: str = Field("Kerala", example="Kerala")
+    hazard_type: str = Field(..., example="Landslide") # Landslide, Flood, Coastal Erosion, Cloudburst, Multi-Hazard
+    hazard_intensity: float = Field(85.0, example=85.0)
+    risk_level: str = Field("CRITICAL_RED", example="CRITICAL_RED")
+    latitude: float = Field(..., example=11.6050)
+    longitude: float = Field(..., example=76.0830)
+    radius_km: float = Field(5.0, example=5.0)
+    population_at_risk: int = Field(1500, example=1500)
+    disaster_history_summary: Optional[str] = "Frequent debris flows & slope failures during monsoon."
+
+class RedZoneResponse(BaseModel):
+    id: int
+    public_ref: str
+    name: str
+    district: str
+    state: str
+    hazard_type: str
+    hazard_intensity: float
+    risk_level: str
+    latitude: float
+    longitude: float
+    radius_km: float
+    polygon_geojson: Optional[Dict[str, Any]] = None
+    population_at_risk: int
+    vulnerable_habitations_count: int
+    disaster_history_summary: Optional[str] = None
+    status: str
+    last_updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# Relocation Site Schemas
+class RelocationSiteCreate(BaseModel):
+    name: str = Field(..., example="Meppadi Safe Tableland Colony Site B")
+    district: str = Field(..., example="Wayanad")
+    latitude: float = Field(..., example=11.5500)
+    longitude: float = Field(..., example=76.1200)
+    total_area_sqkm: float = Field(3.0, example=3.0)
+    max_capacity_people: int = Field(4000, example=4000)
+    elevation_m: float = Field(240.0, example=240.0)
+    slope_degree: float = Field(3.5, example=3.5)
+    soil_stability_index: float = Field(92.0, example=92.0)
+    distance_from_red_zone_km: float = Field(12.5, example=12.5)
+    infrastructure_score: float = Field(88.0, example=88.0)
+
+class RelocationSiteResponse(BaseModel):
+    id: int
+    public_ref: str
+    name: str
+    district: str
+    latitude: float
+    longitude: float
+    total_area_sqkm: float
+    max_capacity_people: int
+    current_occupied: int
+    remaining_capacity: float
+    elevation_m: float
+    slope_degree: float
+    soil_stability_index: float
+    distance_from_red_zone_km: float
+    infrastructure_score: float
+    suitability_score: float
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# Vulnerable Habitation Schemas
+class VulnerableHabitationCreate(BaseModel):
+    name: str = Field(..., example="Chooralmala Riverside Settlement")
+    district: str = Field(..., example="Wayanad")
+    red_zone_id: Optional[int] = None
+    population: int = Field(520, example=520)
+    vulnerable_children_count: int = Field(140, example=140)
+    vulnerable_elderly_count: int = Field(95, example=95)
+    poverty_index: float = Field(72.0, example=72.0)
+    housing_type: str = Field("Kutcha", example="Kutcha")
+    disaster_history_count: int = Field(5, example=5)
+    latitude: float = Field(..., example=11.6010)
+    longitude: float = Field(..., example=76.0810)
+
+class VulnerableHabitationResponse(BaseModel):
+    id: int
+    public_ref: str
+    name: str
+    district: str
+    red_zone_id: Optional[int] = None
+    assigned_site_id: Optional[int] = None
+    population: int
+    vulnerable_children_count: int
+    vulnerable_elderly_count: int
+    poverty_index: float
+    housing_type: str
+    disaster_history_count: int
+    latitude: float
+    longitude: float
+    relocation_priority_score: float
+    relocation_tier: str
+    relocation_status: str
+    scoring_breakdown: Optional[Dict[str, Any]] = None
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# SDMA Policy Brief Schema
+class SDMAPolicyReportRequest(BaseModel):
+    district: Optional[str] = "All Districts"
+    target_state: Optional[str] = "Odisha & Vulnerable States"
+

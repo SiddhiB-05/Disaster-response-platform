@@ -176,11 +176,100 @@ class AuditEvent(Base):
     __tablename__ = "audit_events"
 
     id = Column(Integer, primary_key=True, index=True)
-    entity_type = Column(String, nullable=False, index=True) # Incident, Resource, Alert, Assignment
+    entity_type = Column(String, nullable=False, index=True) # Incident, Resource, Alert, Assignment, RedZone, RelocationSite
     entity_id = Column(Integer, nullable=False, index=True)
-    event_type = Column(String, nullable=False, index=True)  # CREATED, STATUS_CHANGED, DISPATCHED, RECALCULATED
+    event_type = Column(String, nullable=False, index=True)  # CREATED, STATUS_CHANGED, DISPATCHED, RECALCULATED, RED_ZONE_UPDATED
     old_value = Column(String, nullable=True)
     new_value = Column(String, nullable=True)
     actor = Column(String, default="system")                 # citizen, authority, system
     metadata_json = Column(JSON, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+
+
+class RedZone(Base):
+    __tablename__ = "red_zones"
+
+    id = Column(Integer, primary_key=True, index=True)
+    public_ref = Column(String, unique=True, index=True, default=lambda: generate_public_ref("RED"))
+    name = Column(String, nullable=False)
+    district = Column(String, nullable=False, default="State Region")
+    state = Column(String, nullable=False, default="Odisha / Multi-State")
+    hazard_type = Column(String, nullable=False) # Landslide, Flood, Coastal Erosion, Cloudburst, Multi-Hazard
+    hazard_intensity = Column(Float, default=85.0) # 0 to 100
+    risk_level = Column(String, default="HIGH_RISK") # CRITICAL_RED, HIGH_RISK, MODERATE_WARNING
+    
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    radius_km = Column(Float, default=5.0)
+    polygon_geojson = Column(JSON, nullable=True)
+    
+    population_at_risk = Column(Integer, default=1500)
+    vulnerable_habitations_count = Column(Integer, default=3)
+    disaster_history_summary = Column(Text, nullable=True)
+    status = Column(String, default="ACTIVE_RED_ZONE", index=True) # ACTIVE_RED_ZONE, WARNING_ZONE, MITIGATED
+    
+    last_updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    habitations = relationship("VulnerableHabitation", back_populates="red_zone", cascade="all, delete-orphan")
+
+
+class RelocationSite(Base):
+    __tablename__ = "relocation_sites"
+
+    id = Column(Integer, primary_key=True, index=True)
+    public_ref = Column(String, unique=True, index=True, default=lambda: generate_public_ref("SIT"))
+    name = Column(String, nullable=False)
+    district = Column(String, nullable=False, default="State Region")
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    
+    total_area_sqkm = Column(Float, default=2.5)
+    max_capacity_people = Column(Integer, default=5000)
+    current_occupied = Column(Integer, default=800)
+    
+    elevation_m = Column(Float, default=120.0)
+    slope_degree = Column(Float, default=4.5)
+    soil_stability_index = Column(Float, default=88.0)
+    distance_from_red_zone_km = Column(Float, default=14.5)
+    infrastructure_score = Column(Float, default=82.0)
+    
+    suitability_score = Column(Float, default=85.0)
+    status = Column(String, default="OPTIMAL", index=True) # OPTIMAL, NEAR_CAPACITY, FULL
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    habitations = relationship("VulnerableHabitation", back_populates="assigned_site")
+
+
+class VulnerableHabitation(Base):
+    __tablename__ = "vulnerable_habitations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    public_ref = Column(String, unique=True, index=True, default=lambda: generate_public_ref("HAB"))
+    name = Column(String, nullable=False)
+    district = Column(String, nullable=False, default="State Region")
+    
+    red_zone_id = Column(Integer, ForeignKey("red_zones.id"), nullable=True)
+    assigned_site_id = Column(Integer, ForeignKey("relocation_sites.id"), nullable=True)
+    
+    population = Column(Integer, default=450)
+    vulnerable_children_count = Column(Integer, default=120)
+    vulnerable_elderly_count = Column(Integer, default=80)
+    poverty_index = Column(Float, default=65.0)
+    housing_type = Column(String, default="Kutcha") # Kutcha, Semi-Pucca, Pucca
+    disaster_history_count = Column(Integer, default=4)
+    
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    
+    relocation_priority_score = Column(Float, default=0.0, index=True)
+    relocation_tier = Column(String, default="IMMEDIATE", index=True) # IMMEDIATE, SHORT_TERM, MEDIUM_TERM
+    relocation_status = Column(String, default="PENDING_RELOCATION", index=True)
+    
+    scoring_breakdown = Column(JSON, nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    red_zone = relationship("RedZone", back_populates="habitations")
+    assigned_site = relationship("RelocationSite", back_populates="habitations")
+

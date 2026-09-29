@@ -348,24 +348,225 @@ def seed_demo_data(db: Session = Depends(get_db)):
             db.add(inc_obj)
         db.commit()
 
+    # 5. Multi-Hazard Red Zones
+    if db.query(models.RedZone).count() == 0:
+        rz1 = models.RedZone(
+            name="Wayanad Chooralmala Debris-Flow Belt",
+            district="Wayanad",
+            state="Kerala",
+            hazard_type="Landslide",
+            hazard_intensity=92.0,
+            risk_level="CRITICAL_RED",
+            latitude=11.6050,
+            longitude=76.0830,
+            radius_km=4.5,
+            population_at_risk=2400,
+            vulnerable_habitations_count=3,
+            disaster_history_summary="Catastrophic hill-slope collapse & debris flows during extreme monsoon spells."
+        )
+        rz2 = models.RedZone(
+            name="Brahmani River Sector 6 Inundation Zone",
+            district="Rourkela",
+            state="Odisha",
+            hazard_type="Flood",
+            hazard_intensity=88.0,
+            risk_level="CRITICAL_RED",
+            latitude=22.2604,
+            longitude=84.8536,
+            radius_km=6.0,
+            population_at_risk=3500,
+            vulnerable_habitations_count=4,
+            disaster_history_summary="Annual river bank breach causing 2-3m flood inundation in low-lying housing."
+        )
+        rz3 = models.RedZone(
+            name="Kendrapara Coastal Erosion Red Belt",
+            district="Kendrapara",
+            state="Odisha",
+            hazard_type="Coastal Erosion",
+            hazard_intensity=85.0,
+            risk_level="HIGH_RISK",
+            latitude=20.5000,
+            longitude=86.7500,
+            radius_km=8.0,
+            population_at_risk=1800,
+            vulnerable_habitations_count=2,
+            disaster_history_summary="Active sea ingress eating 15m of shoreline annually during cyclonic surges."
+        )
+        rz4 = models.RedZone(
+            name="Uttarkashi Mandakini Cloudburst Corridor",
+            district="Uttarkashi",
+            state="Uttarakhand",
+            hazard_type="Cloudburst",
+            hazard_intensity=90.0,
+            risk_level="CRITICAL_RED",
+            latitude=30.7300,
+            longitude=78.4400,
+            radius_km=5.0,
+            population_at_risk=1200,
+            vulnerable_habitations_count=2,
+            disaster_history_summary="Sudden intense convective cloudbursts causing flash floods and rockfalls."
+        )
+        db.add_all([rz1, rz2, rz3, rz4])
+        db.commit()
+
+    # 6. Safer Relocation Sites
+    if db.query(models.RelocationSite).count() == 0:
+        s1 = models.RelocationSite(
+            name="Meppadi Safe Tableland Colony Site A",
+            district="Wayanad",
+            latitude=11.5500,
+            longitude=76.1200,
+            total_area_sqkm=3.5,
+            max_capacity_people=5000,
+            current_occupied=900,
+            elevation_m=280.0,
+            slope_degree=3.2,
+            soil_stability_index=94.0,
+            distance_from_red_zone_km=14.2,
+            infrastructure_score=88.0,
+            suitability_score=92.0
+        )
+        s2 = models.RelocationSite(
+            name="Sector 19 Safe Ridge Township Site B",
+            district="Rourkela",
+            latitude=22.2800,
+            longitude=84.8800,
+            total_area_sqkm=5.0,
+            max_capacity_people=7500,
+            current_occupied=1200,
+            elevation_m=145.0,
+            slope_degree=2.5,
+            soil_stability_index=90.0,
+            distance_from_red_zone_km=12.0,
+            infrastructure_score=92.0,
+            suitability_score=94.0
+        )
+        s3 = models.RelocationSite(
+            name="Rajnagar Inland Safe Plateau Site C",
+            district="Kendrapara",
+            latitude=20.5800,
+            longitude=86.6800,
+            total_area_sqkm=4.0,
+            max_capacity_people=4500,
+            current_occupied=400,
+            elevation_m=95.0,
+            slope_degree=1.5,
+            soil_stability_index=88.0,
+            distance_from_red_zone_km=18.5,
+            infrastructure_score=82.0,
+            suitability_score=89.0
+        )
+        db.add_all([s1, s2, s3])
+        db.commit()
+
+    # 7. Vulnerable Habitations
+    if db.query(models.VulnerableHabitation).count() == 0:
+        rz_list = db.query(models.RedZone).all()
+        rz_map = {rz.name: rz.id for rz in rz_list}
+
+        h1 = models.VulnerableHabitation(
+            name="Chooralmala Riverside Slum",
+            district="Wayanad",
+            red_zone_id=rz_map.get("Wayanad Chooralmala Debris-Flow Belt"),
+            population=520,
+            vulnerable_children_count=140,
+            vulnerable_elderly_count=95,
+            poverty_index=78.0,
+            housing_type="Kutcha",
+            disaster_history_count=6,
+            latitude=11.6010,
+            longitude=76.0810,
+            relocation_priority_score=88.5,
+            relocation_tier="IMMEDIATE"
+        )
+        h2 = models.VulnerableHabitation(
+            name="Sector 6 Low-Lying Kutcha Settlement",
+            district="Rourkela",
+            red_zone_id=rz_map.get("Brahmani River Sector 6 Inundation Zone"),
+            population=850,
+            vulnerable_children_count=210,
+            vulnerable_elderly_count=130,
+            poverty_index=72.0,
+            housing_type="Kutcha",
+            disaster_history_count=4,
+            latitude=22.2590,
+            longitude=84.8520,
+            relocation_priority_score=82.0,
+            relocation_tier="IMMEDIATE"
+        )
+        h3 = models.VulnerableHabitation(
+            name="Satabhaya Coastal Erosion Habitation",
+            district="Kendrapara",
+            red_zone_id=rz_map.get("Kendrapara Coastal Erosion Red Belt"),
+            population=420,
+            vulnerable_children_count=110,
+            vulnerable_elderly_count=80,
+            poverty_index=84.0,
+            housing_type="Kutcha",
+            disaster_history_count=5,
+            latitude=20.5050,
+            longitude=86.7450,
+            relocation_priority_score=79.5,
+            relocation_tier="IMMEDIATE"
+        )
+        h4 = models.VulnerableHabitation(
+            name="Mandakini River Bank Colony",
+            district="Uttarkashi",
+            red_zone_id=rz_map.get("Uttarkashi Mandakini Cloudburst Corridor"),
+            population=380,
+            vulnerable_children_count=90,
+            vulnerable_elderly_count=60,
+            poverty_index=60.0,
+            housing_type="Semi-Pucca",
+            disaster_history_count=3,
+            latitude=30.7280,
+            longitude=78.4380,
+            relocation_priority_score=68.0,
+            relocation_tier="SHORT_TERM"
+        )
+        h5 = models.VulnerableHabitation(
+            name="Panposh Buffer Extension Hamlet",
+            district="Rourkela",
+            red_zone_id=rz_map.get("Brahmani River Sector 6 Inundation Zone"),
+            population=310,
+            vulnerable_children_count=50,
+            vulnerable_elderly_count=30,
+            poverty_index=45.0,
+            housing_type="Pucca",
+            disaster_history_count=1,
+            latitude=22.2520,
+            longitude=84.8420,
+            relocation_priority_score=42.0,
+            relocation_tier="MEDIUM_TERM"
+        )
+        db.add_all([h1, h2, h3, h4, h5])
+        db.commit()
+
     return {
         "status": "success",
-        "message": "Synthetic Rourkela demo data successfully seeded!",
+        "message": "Synthetic Disaster Platform & Proactive SDMA Relocation demo data successfully seeded!",
         "incidents_count": db.query(models.Incident).count(),
         "resources_count": db.query(models.Resource).count(),
         "facilities_count": db.query(models.CriticalFacility).count(),
-        "alerts_count": db.query(models.DisasterAlert).count()
+        "alerts_count": db.query(models.DisasterAlert).count(),
+        "red_zones_count": db.query(models.RedZone).count(),
+        "relocation_sites_count": db.query(models.RelocationSite).count(),
+        "vulnerable_habitations_count": db.query(models.VulnerableHabitation).count()
     }
 
 @router.post("/reset")
 def reset_demo_data(db: Session = Depends(get_db)):
-    """Reset all database tables and re-seed clean synthetic Rourkela state."""
+    """Reset all database tables and re-seed clean synthetic Rourkela & SDMA state."""
     db.query(models.AuditEvent).delete()
     db.query(models.Assignment).delete()
     db.query(models.Incident).delete()
     db.query(models.Resource).delete()
     db.query(models.CriticalFacility).delete()
     db.query(models.DisasterAlert).delete()
+    db.query(models.VulnerableHabitation).delete()
+    db.query(models.RelocationSite).delete()
+    db.query(models.RedZone).delete()
     db.commit()
 
     return seed_demo_data(db)
+

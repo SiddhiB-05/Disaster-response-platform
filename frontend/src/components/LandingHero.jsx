@@ -105,10 +105,14 @@ export default function LandingHero({ onNavigate, activeTab, totalIncidents = 5 
 
               {/* Subtitle Paragraph */}
               <StaggerItem>
+                <div className="font-mono text-sm font-black bg-black text-[#6DBE5A] px-3 py-1.5 inline-block border border-black mb-2 uppercase tracking-wider">
+                  IDENTIFY RISK. PLAN RELOCATION. SAVE LIVES.
+                </div>
                 <p className="font-sans text-sm sm:text-base text-gray-800 leading-relaxed max-w-2xl font-medium">
-                  Four autonomous AI agents transform raw disaster incident reports into predictive priority scores and deployment-ready action plans — in real time.
+                  An AI-powered disaster-risk intelligence platform for identifying hazard-based Red Zones, assessing vulnerable habitations, evaluating safe relocation capacity, and supporting proactive relocation and emergency response.
                 </p>
               </StaggerItem>
+
 
               {/* Technical Meta Tag */}
               <StaggerItem>
