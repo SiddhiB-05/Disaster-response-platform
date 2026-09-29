@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Activity, ShieldAlert, Cpu, Map, Layers, RefreshCw, GitBranch, Home, CloudRain, Bot, PhoneCall, Radio, UserCheck, Shield } from 'lucide-react';
 import drishtiLogo from '../assets/drishti-logo.jpg';
+import drishtiEmblem from '../assets/drishti-emblem.png';
 
 export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAlert, isResetting = false, currentUser }) {
   const tabs = [
@@ -76,9 +77,9 @@ export default function Navbar({ activeTab, setActiveTab, onResetDemo, activeAle
       <div className="px-3 sm:px-6 py-3 bg-[#162415] border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <img 
-            src={drishtiLogo} 
+            src={drishtiEmblem} 
             alt="DRISHTi Logo" 
-            className="w-10 h-10 object-contain rounded border-2 border-black bg-[#6DBE5A] shadow-tactile-sm shrink-0" 
+            className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg border-2 border-black bg-[#101F11] p-1 shadow-[3px_3px_0px_#000] shrink-0" 
           />
           <div>
             <div className="flex items-center gap-2">
